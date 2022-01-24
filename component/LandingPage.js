@@ -1,18 +1,24 @@
 import {
+  Image,
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
 } from 'react-native';
-import { useFonts } from 'expo-font';
 import Button from './Button';
+import AppLoading from 'expo-app-loading';
+import { useFonts, Alegreya_400Regular } from '@expo-google-fonts/alegreya';
+import { shadowColor } from 'react-native/Libraries/Components/View/ReactNativeStyleAttributes';
 
 const LandingPage = () => {
-  const [loaded] = useFonts({
-    Alegreya: require('../assets/Alegreya/static/Alegreya-Regular.ttf'),
-  });
+  // let [fontsLoaded] = useFonts({
+  //   Alegreya_400Regular,
+  // });
 
+  // if (!fontsLoaded) {
+  //   return <AppLoading />;
+  // } else {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -21,6 +27,10 @@ const LandingPage = () => {
         style={styles.Background}
       >
         <View style={styles.contents}>
+          <Image
+            source={require('../naturely-text-only.png')}
+            style={styles.logo}
+          />
           <Text style={styles.Welcome}>WELCOME</Text>
           <Text style={styles.TagLine}>Take pictures. Share Nature.</Text>
           <Text style={styles.TagLine}>Feel Naturely.</Text>
@@ -34,6 +44,7 @@ const LandingPage = () => {
     </View>
   );
 };
+//};
 
 const styles = StyleSheet.create({
   container: {
@@ -56,8 +67,17 @@ const styles = StyleSheet.create({
     minWidth: '100%',
   },
 
+  logo: {
+    top: -270,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '75%',
+  },
+
   Welcome: {
-    fontFamily: 'Alegreya_400Regular',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 6,
     fontSize: 25,
     fontWeight: 'bold',
     color: '#FFF',
@@ -67,18 +87,27 @@ const styles = StyleSheet.create({
   },
 
   TagLine: {
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 6,
     color: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   NoAccount: {
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 6,
     color: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   SignUp: {
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 6,
     fontWeight: 'bold',
     color: '#FFF',
     justifyContent: 'center',
