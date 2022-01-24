@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   Welcome: {
     fontSize: 25,
     fontWeight: "bold",
+    color: "#FFF",
     paddingBottom: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
 
   TagLine: {
     paddingBottom: 75,
+    color: "#FFF",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -69,12 +71,14 @@ const styles = StyleSheet.create({
   //change colour to white when background sorted
 
   NoAccount: {
+    color: "#FFF",
     justifyContent: "center",
     alignItems: "center",
   },
 
   SignUp: {
     fontWeight: "bold",
+    color: "#FFF",
     justifyContent: "center",
     alignItems: "center",
   },
