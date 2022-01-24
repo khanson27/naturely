@@ -4,27 +4,32 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-} from "react-native";
+} from 'react-native';
+import { useFonts } from 'expo-font';
+import Button from './Button';
 
 const LandingPage = () => {
+  const [loaded] = useFonts({
+    Alegreya: require('../assets/Alegreya/static/Alegreya-Regular.ttf'),
+  });
+
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../LandingBackground.jpg")}
+        source={require('../LandingBackground.jpg')}
         resizeMode="cover"
         style={styles.Background}
       >
-        <Text style={styles.Welcome}>WELCOME</Text>
-        <Text style={styles.TagLine}>
-          Take pictures. Share Nature. Feel Naturely.
-        </Text>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.logInText}>Login With Username</Text>
-        </TouchableOpacity>
-        <Text style={styles.NoAccount}>Don't have an account?</Text>
-        <TouchableOpacity>
-          <Text style={styles.SignUp}>Sign Up</Text>
-        </TouchableOpacity>
+        <View style={styles.contents}>
+          <Text style={styles.Welcome}>WELCOME</Text>
+          <Text style={styles.TagLine}>Take pictures. Share Nature.</Text>
+          <Text style={styles.TagLine}>Feel Naturely.</Text>
+          <Button />
+          <Text style={styles.NoAccount}>Don't have an account?</Text>
+          <TouchableOpacity>
+            <Text style={styles.SignUp}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
     </View>
   );
@@ -33,64 +38,51 @@ const LandingPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  contents: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    bottom: 70,
   },
 
   Background: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    minWidth: "100%",
+    justifyContent: 'center',
+    alignItems: 'center',
+    minWidth: '100%',
   },
 
   Welcome: {
+    fontFamily: 'Alegreya_400Regular',
     fontSize: 25,
-    fontWeight: "bold",
-    color: "#FFF",
+    fontWeight: 'bold',
+    color: '#FFF',
     paddingBottom: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   TagLine: {
-    paddingBottom: 75,
-    color: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
+    color: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-
-  logInText: {
-    color: "#FFF",
-    fontSize: 20,
-    alignContent: "center",
-    justifyContent: "center",
-    paddingLeft: 45,
-    paddingRight: 45,
-  },
-  //change colour to white when background sorted
 
   NoAccount: {
-    color: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
+    color: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
   SignUp: {
-    fontWeight: "bold",
-    color: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  button: {
-    backgroundColor: "#253334",
-    padding: 15,
-    borderRadius: 25,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
