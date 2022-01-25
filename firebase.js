@@ -33,15 +33,19 @@ const firestore = getFirestore();
 
 // Util Functions
 
-const createUser = (email, password) => {
+const createUser = (email, password, username) => {
   createUserWithEmailAndPassword(auth, email, password)
     .then(({ user }) => {
       const docObj = {
         email,
+        username,
         avatar_url: "./defaultuser.png",
         creationDate: Date.now(),
       };
       setDoc(doc(firestore, "users", user.uid), docObj);
+    })
+    .then(() => {
+      signInWithEmailAndPassword(auth, email, password);
     })
     .catch((err) => alert(err.message));
 };
