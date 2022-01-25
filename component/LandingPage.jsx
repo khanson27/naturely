@@ -12,9 +12,9 @@ import { useFonts, Alegreya_400Regular } from "@expo-google-fonts/alegreya";
 import { shadowColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
 const LandingPage = () => {
-  // let [fontsLoaded] = useFonts({
-  //   Alegreya_400Regular,
-  // });
+  let [fontsLoaded] = useFonts({
+    Alegreya_400Regular,
+  });
 
   // if (!fontsLoaded) {
   //   return <AppLoading />;
