@@ -7,6 +7,7 @@ import {
   ImageBackground,
 } from "react-native";
 import Button from "./Button";
+import NavBar from "./NavBar";
 import AppLoading from "expo-app-loading";
 import { useFonts, Alegreya_400Regular } from "@expo-google-fonts/alegreya";
 import { shadowColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
@@ -41,6 +42,7 @@ const LandingPage = () => {
           </TouchableOpacity>
         </View>
       </ImageBackground>
+      <NavBar />
     </View>
   );
 };
