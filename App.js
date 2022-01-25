@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, SafeAreaView, Platform } from "react-native";
 import LandingPage from "./component/LandingPage";
 import { LoginPage } from "./component/LoginPage";
+import { RegisterPage } from "./component/RegisterPage";
 import { createUser } from "./firebase";
 
 export default function App() {
@@ -10,7 +11,8 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       {/* <LandingPage /> */}
-      <LoginPage />
+      {/* <LoginPage /> */}
+      <RegisterPage />
     </SafeAreaView>
   );
 }
