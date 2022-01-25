@@ -4,10 +4,22 @@ const NavBar = () => {
   return (
     <View style={styles.container}>
       <View style={styles.iconsLayout}>
-        <Text style={styles.icons}> 🏠 </Text>
-        <Text style={styles.icons}> 🗺 </Text>
-        <Text style={styles.icons}> 🔍 </Text>
-        <Text style={styles.icons}> ➕ </Text>
+        <Image
+          source={require('../assets/NavIcons/home1.png')}
+          style={styles.icons}
+        />
+        <Image
+          source={require('../assets/NavIcons/map1.png')}
+          style={styles.icons}
+        />
+        <Image
+          source={require('../assets/NavIcons/search1.png')}
+          style={styles.icons}
+        />
+        <Image
+          source={require('../assets/NavIcons/plus1.png')}
+          style={styles.icons}
+        />
       </View>
     </View>
   );
@@ -31,7 +43,10 @@ const styles = StyleSheet.create({
   },
 
   icons: {
-    fontSize: 45,
+    marginLeft: 30,
+    marginRight: 30,
+    height: 30,
+    width: 30,
   },
 });
 
