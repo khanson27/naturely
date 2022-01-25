@@ -7,28 +7,18 @@ import {
   ImageBackground,
 } from "react-native";
 import Button from "./Button";
-import AppLoading from "expo-app-loading";
-import { useFonts, Alegreya_400Regular } from "@expo-google-fonts/alegreya";
-import { shadowColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
 const LandingPage = () => {
-  let [fontsLoaded] = useFonts({
-    Alegreya_400Regular,
-  });
-
-  // if (!fontsLoaded) {
-  //   return <AppLoading />;
-  // } else {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../LandingBackground.jpg")}
+        source={require("../assets/LandingBackground.jpg")}
         resizeMode="cover"
         style={styles.Background}
       >
         <View style={styles.contents}>
           <Image
-            source={require("../naturely-text-only.png")}
+            source={require("../assets/naturely-text-only.png")}
             style={styles.logo}
           />
           <Text style={styles.Welcome}>WELCOME</Text>
