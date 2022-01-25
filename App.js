@@ -1,23 +1,45 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, SafeAreaView, Platform } from "react-native";
 import LandingPage from "./component/LandingPage";
-import { createUser } from "./firebase";
+import { LoginPage } from "./component/LoginPage";
+import { RegisterPage } from "./component/RegisterPage";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  createUser("test@test.com", "test123");
-
   return (
-    <View style={styles.container}>
-      <LandingPage />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="LandingPage">
+          <Stack.Screen
+            name="LandingPage"
+            options={{ headerShown: false }}
+            component={LandingPage}
+          />
+          <Stack.Screen
+            name="LoginPage"
+            options={{ headerShown: false }}
+            component={LoginPage}
+          />
+          <Stack.Screen
+            name="RegisterPage"
+            options={{ headerShown: false }}
+            component={RegisterPage}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+
+      {/* <LandingPage />
+      <LoginPage />
+      <RegisterPage /> */}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: Platform.OS === "android" ? 25 : 0,
   },
 });
