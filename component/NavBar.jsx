@@ -36,7 +36,7 @@ const NavBar = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#253334',
-    bottom: 0,
+    bottom: -1,
     minHeight: '12%',
     borderColor: '#2f4d40',
     borderWidth: 1,
