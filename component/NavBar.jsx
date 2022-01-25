@@ -1,4 +1,4 @@
-import { Image, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Image, View, TouchableOpacity, StyleSheet } from "react-native";
 
 const NavBar = () => {
   return (
@@ -6,25 +6,25 @@ const NavBar = () => {
       <View style={styles.iconsLayout}>
         <TouchableOpacity>
           <Image
-            source={require('../assets/NavIcons/home1.png')}
+            source={require("../assets/NavIcons/home1.png")}
             style={styles.icons}
           />
         </TouchableOpacity>
         <TouchableOpacity>
           <Image
-            source={require('../assets/NavIcons/map1.png')}
+            source={require("../assets/NavIcons/map1.png")}
             style={styles.icons}
           />
         </TouchableOpacity>
         <TouchableOpacity>
           <Image
-            source={require('../assets/NavIcons/search1.png')}
+            source={require("../assets/NavIcons/search1.png")}
             style={styles.icons}
           />
         </TouchableOpacity>
         <TouchableOpacity>
           <Image
-            source={require('../assets/NavIcons/plus1.png')}
+            source={require("../assets/NavIcons/plus1.png")}
             style={styles.icons}
           />
         </TouchableOpacity>
@@ -35,21 +35,21 @@ const NavBar = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#253334',
-    bottom: -1,
-    minHeight: '12%',
-    borderColor: '#2f4d40',
+    backgroundColor: "#253334",
+    bottom: -300,
+    minHeight: "12%",
+    borderColor: "#2f4d40",
     borderWidth: 1,
-    minWidth: '100%',
+    minWidth: "100%",
     borderRadius: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   iconsLayout: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
 
   icons: {
