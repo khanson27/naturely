@@ -1,12 +1,21 @@
 // Import the functions you need from the SDKs you need.
 
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
-} from "firebase/auth";
-import { getFirestore, setDoc, doc, Timestamp } from "firebase/firestore";
+} from 'firebase/auth';
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  getDocs,
+  Timestamp,
+  updateDoc,
+  collection,
+  addDoc,
+} from 'firebase/firestore';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -15,14 +24,14 @@ import { getFirestore, setDoc, doc, Timestamp } from "firebase/firestore";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E",
-  authDomain: "naturely-3428a.firebaseapp.com",
+  apiKey: 'AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E',
+  authDomain: 'naturely-3428a.firebaseapp.com',
   databaseURL:
-    "https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "naturely-3428a",
-  storageBucket: "naturely-3428a.appspot.com",
-  messagingSenderId: "171617270088",
-  appId: "1:171617270088:web:9c3ca9ce62ca771d69db7d",
+    'https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'naturely-3428a',
+  storageBucket: 'naturely-3428a.appspot.com',
+  messagingSenderId: '171617270088',
+  appId: '1:171617270088:web:9c3ca9ce62ca771d69db7d',
 };
 
 // Initialize Firebase
@@ -34,20 +43,43 @@ const firestore = getFirestore();
 // Util Functions
 
 const createUser = (email, password, username) => {
-  createUserWithEmailAndPassword(auth, email, password)
-    .then(({ user }) => {
-      const docObj = {
-        email,
-        username,
-        avatar_url: "./defaultuser.png",
-        creationDate: Date.now(),
-      };
-      setDoc(doc(firestore, "users", user.uid), docObj);
+  const docObj = {
+    email,
+    avatar_url:
+      'https://firebasestorage.googleapis.com/v0/b/naturely-3428a.appspot.com/o/defaultuser.png?alt=media&token=c380dc03-d0b1-4d03-8c63-2854828ad027',
+    creationDate: Date.now(),
+    posts: [],
+    comments: [],
+  };
+
+  getDocs(collection(firestore, 'users'))
+    .then((userArr) => {
+      userArr.forEach((user) => {
+        if (user.id === username) {
+          throw { message: 'username already exists' };
+        }
+      });
     })
     .then(() => {
-      signInWithEmailAndPassword(auth, email, password);
+      return setDoc(doc(firestore, 'users', username), docObj);
     })
-    .catch((err) => alert(err.message));
+    .then(() => {
+      return createUserWithEmailAndPassword(auth, email, password);
+    })
+    .then(({ user }) => {
+      setDoc(
+        doc(firestore, 'users', username),
+        {
+          auth_id: user.uid,
+        },
+        {
+          merge: true,
+        }
+      );
+    })
+    .catch((err) => {
+      alert(err.message);
+    });
 };
 
 const loginUser = (email, password) => {
@@ -56,6 +88,26 @@ const loginUser = (email, password) => {
   );
 };
 
+const editProfilePicture = (url, username) => {
+  updateDoc(doc(firestore, 'users', username), {
+    avatar_url: url,
+  }).catch((err) => alert(err.message));
+};
+
+const createPost = (description, picUrl, username, tags, location) => {
+  addDoc(collection(firestore, 'posts'), {
+    description,
+    picUrl,
+    username,
+    tags,
+    location,
+  }).then((post) => {
+    updateDoc(doc(firestore, 'users', username), {
+      posts: arrayUnion(post.id),
+    }).catch((err) => alert(err.message));
+  });
+};
+
 // Exports
 
-export { auth, createUser, loginUser };
+export { auth, createUser, loginUser, editProfilePicture, createPost };
