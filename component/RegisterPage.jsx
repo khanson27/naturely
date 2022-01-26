@@ -11,12 +11,20 @@ import {
 } from "react-native";
 import { ButtonLogin } from "./ButtonLogin";
 import { Octicons } from "@expo/vector-icons";
+import { createUser } from "../firebase";
 
 const { width, height } = Dimensions.get("window");
-export const RegisterPage = () => {
+export const RegisterPage = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleRegister = () => {
+    createUser(email, password, username);
+    setEmail("");
+    setUsername("");
+    setPassword("");
+  };
 
   return (
     <>
@@ -70,9 +78,13 @@ export const RegisterPage = () => {
                 width={0.8}
               />
 
-              <ButtonLogin text={"Sign Up"} />
+              <ButtonLogin text={"Sign Up"} clickFunc={handleRegister} />
               <Text style={styles.HaveAccount}>Already have an account?</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("RegisterPage");
+                }}
+              >
                 <Text style={styles.Login}>Login</Text>
               </TouchableOpacity>
             </View>

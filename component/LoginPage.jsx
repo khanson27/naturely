@@ -1,5 +1,6 @@
 import { InputText } from "./InputText";
 import React, { useState } from "react";
+import { loginUser } from "../firebase";
 import {
   View,
   StyleSheet,
@@ -13,9 +14,15 @@ import { ButtonLogin } from "./ButtonLogin";
 import { AntDesign } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
-export const LoginPage = () => {
-  const [username, setUsername] = useState("");
+export const LoginPage = ({ navigation }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleRegister = () => {
+    loginUser(email, password);
+    setEmail("");
+    setPassword("");
+  };
 
   return (
     <View style={styles.container}>
@@ -41,9 +48,9 @@ export const LoginPage = () => {
 
           <View style={styles.end}>
             <InputText
-              onChangeText={setUsername}
-              text={username}
-              placeholder="Username"
+              onChangeText={setEmail}
+              text={email}
+              placeholder="Email"
               autoComplete="name"
               opacity={0.62}
               width={0.8}
@@ -58,9 +65,13 @@ export const LoginPage = () => {
               opacity={0.62}
               width={0.8}
             />
-            <ButtonLogin text={"Login"} />
+            <ButtonLogin text={"Login"} clickFunc={handleRegister} />
             <Text style={styles.NoAccount}>Don't have an account?</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("RegisterPage");
+              }}
+            >
               <Text style={styles.SignUp}>Sign Up</Text>
             </TouchableOpacity>
           </View>

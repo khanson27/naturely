@@ -9,7 +9,7 @@ import {
 import NavBar from "./NavBar";
 import Button from "./Button";
 
-const LandingPage = () => {
+const LandingPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -27,7 +27,11 @@ const LandingPage = () => {
           <Text style={styles.TagLine}>Feel Naturely.</Text>
           <Button />
           <Text style={styles.NoAccount}>Don't have an account?</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("RegisterPage");
+            }}
+          >
             <Text style={styles.SignUp}>Sign Up</Text>
           </TouchableOpacity>
         </View>

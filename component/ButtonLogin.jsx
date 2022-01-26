@@ -7,10 +7,10 @@ import {
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 
-export function ButtonLogin({ text }) {
+export function ButtonLogin({ text, clickFunc }) {
   return (
     <View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={clickFunc}>
         <Text style={styles.logInText}>{text}</Text>
       </TouchableOpacity>
     </View>
