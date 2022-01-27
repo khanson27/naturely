@@ -1,12 +1,18 @@
 import NavBar from "./NavBar";
 import Header from "./Header";
 import Button from "./Button";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+} from "react-native";
 import { getPosts } from "../firebase";
 import { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 
-const NewsFeedCards = () => {
+const NewsFeedCards = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,7 +31,15 @@ const NewsFeedCards = () => {
   return (
     <View>
       <Header />
-      {isLoading ? <Text>isLoading</Text> : <PostCard posts={posts[0]} />}
+      {isLoading ? (
+        <Text>News Feed Loading...</Text>
+      ) : (
+        <FlatList
+          data={posts}
+          renderItem={({ item }) => <PostCard posts={item} />}
+          keyExtractor={(item) => item.id}
+        />
+      )}
       <NavBar />
     </View>
   );

@@ -129,7 +129,7 @@ const getPosts = () => {
     .then((arr) => {
       arr.forEach((doc) => {
         const docData = doc.data();
-        postArray.push(docData);
+        postArray.push({ ...docData, id: doc.id });
       });
       // console.log(postArray);
       return postArray;
