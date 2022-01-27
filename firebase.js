@@ -6,7 +6,21 @@ import {
   getAuth,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, setDoc, doc, Timestamp } from "firebase/firestore";
+import {
+  getFirestore,
+  setDoc,
+  doc,
+  getDocs,
+  Timestamp,
+  updateDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  arrayUnion,
+} from "firebase/firestore";
+import { UserContext } from "./context/userContext";
+import { useContext } from "react";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -33,25 +47,81 @@ const firestore = getFirestore();
 
 // Util Functions
 
-const createUser = (email, password) => {
-  createUserWithEmailAndPassword(auth, email, password)
+const createUser = (email, password, username) => {
+  const docObj = {
+    email,
+    avatar_url:
+      "https://firebasestorage.googleapis.com/v0/b/naturely-3428a.appspot.com/o/defaultuser.png?alt=media&token=c380dc03-d0b1-4d03-8c63-2854828ad027",
+    creationDate: Date.now(),
+    posts: [],
+    comments: [],
+  };
+
+  getDocs(collection(firestore, "users"))
+    .then((userArr) => {
+      userArr.forEach((user) => {
+        if (user.id === username) {
+          throw { message: "username already exists" };
+        }
+      });
+    })
+    .then(() => {
+      return setDoc(doc(firestore, "users", username), docObj);
+    })
+    .then(() => {
+      return createUserWithEmailAndPassword(auth, email, password);
+    })
     .then(({ user }) => {
-      const docObj = {
-        email,
-        avatar_url: "./defaultuser.png",
-        creationDate: Date.now(),
-      };
-      setDoc(doc(firestore, "users", user.uid), docObj);
+      setDoc(
+        doc(firestore, "users", username),
+        {
+          auth_id: user.uid,
+        },
+        {
+          merge: true,
+        }
+      );
+    })
+    .catch((err) => {
+      alert(err.message);
+    });
+};
+//uid = docs._firestore._authCredentials.currentUser.uid
+const loginUser = (email, password) => {
+  return signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      return getDocs(collection(firestore, "users"));
+    })
+    .then((docs) => {
+      let username = "";
+      docs.forEach((doc) => {
+        if (doc.data().email === email) username = doc.id;
+      });
+      return username;
     })
     .catch((err) => alert(err.message));
 };
 
-const loginUser = (email, password) => {
-  signInWithEmailAndPassword(auth, email, password).catch((err) =>
-    alert(err.message)
-  );
+const editProfilePicture = (url, username) => {
+  updateDoc(doc(firestore, "users", username), {
+    avatar_url: url,
+  }).catch((err) => alert(err.message));
+};
+
+const createPost = (description, picUrl, username, tags, location) => {
+  addDoc(collection(firestore, "posts"), {
+    description,
+    picUrl,
+    username,
+    tags,
+    location,
+  }).then((post) => {
+    updateDoc(doc(firestore, "users", username), {
+      posts: arrayUnion(post.id),
+    }).catch((err) => alert(err.message));
+  });
 };
 
 // Exports
 
-export { auth, createUser, loginUser };
+export { auth, createUser, loginUser, editProfilePicture, createPost };
