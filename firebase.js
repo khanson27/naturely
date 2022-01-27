@@ -18,6 +18,7 @@ import {
   query,
   where,
   arrayUnion,
+  getDoc,
 } from "firebase/firestore";
 import { UserContext } from "./context/userContext";
 import { useContext } from "react";
@@ -124,20 +125,25 @@ const createPost = (description, picUrl, username, tags, location) => {
 
 const getPosts = () => {
   let postArray = [];
-  let flattenedArr;
   return getDocs(collection(firestore, "posts"))
     .then((arr) => {
       arr.forEach((doc) => {
         const docData = doc.data();
-        let postObject = { posts: arrayUnion(docData) };
-        postArray.push(postObject.posts.Wc);
-        flattenedArr = postArray.flat();
+        postArray.push(docData);
       });
-      return flattenedArr;
+      // console.log(postArray);
+      return postArray;
     })
     .catch((err) => alert(err.message));
 };
 
+const getUser = (username) => {
+  return getDoc(doc(firestore, "users", username))
+    .then((user) => {
+      return user.data();
+    })
+    .catch((err) => alert(err.message));
+};
 // Exports
 
 export {
@@ -147,4 +153,5 @@ export {
   editProfilePicture,
   createPost,
   getPosts,
+  getUser,
 };

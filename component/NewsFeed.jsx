@@ -4,20 +4,28 @@ import Button from "./Button";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { getPosts } from "../firebase";
 import { useState, useEffect } from "react";
+import PostCard from "./PostCard";
 
 const NewsFeedCards = () => {
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    getPosts().then((postArr) => {
-      setPosts(postArr);
-    });
+    setIsLoading(true);
+    getPosts()
+      .then((postArr) => {
+        setPosts(postArr);
+      })
+      .then(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   //refresh button which calls get posts again
   return (
     <View>
       <Header />
-      <Text>Posts</Text>
+      {isLoading ? <Text>isLoading</Text> : <PostCard posts={posts[0]} />}
       <NavBar />
     </View>
   );
