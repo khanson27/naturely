@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { UserContext } from "../context/userContext";
 
-const Test = () => {
+export const Test = () => {
   const [postBody, setPostBody] = useState("");
   const { userData } = useContext(UserContext);
 
@@ -43,5 +43,3 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-
-export default Test;

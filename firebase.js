@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -124,4 +125,11 @@ const createPost = (description, picUrl, username, tags, location) => {
 
 // Exports
 
-export { auth, createUser, loginUser, editProfilePicture, createPost };
+export {
+  auth,
+  onAuthStateChanged,
+  createUser,
+  loginUser,
+  editProfilePicture,
+  createPost,
+};

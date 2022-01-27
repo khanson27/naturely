@@ -1,4 +1,4 @@
-import { InputText } from "./InputText";
+import { InputText } from "../component/InputText";
 import React, { useState, useContext } from "react";
 import { loginUser } from "../firebase";
 import {
@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { ButtonLogin } from "./ButtonLogin";
+import { ButtonLogin } from "../component/ButtonLogin";
 import { AntDesign } from "@expo/vector-icons";
 import { UserContext } from "../context/userContext";
 
