@@ -2,15 +2,18 @@ import NavBar from './NavBar';
 import Header from './Header';
 import Button from './Button';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { getPosts } from '../firebase';
+import { useState, useEffect } from 'react';
 
 const NewsFeedCards = () => {
   const [posts, setPosts] = useState([]);
-  useEffect = () => {
-    //getposts
-    //setposts to getposts
-    //dependencies = empty array
-    //refresh button which calls get posts again
-  };
+  useEffect(() => {
+    getPosts(), [];
+  });
+  //getposts)
+  //setposts to getposts
+  //dependencies = empty array
+  //refresh button which calls get posts again
   return (
     <View>
       <Header />
