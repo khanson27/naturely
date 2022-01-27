@@ -1,11 +1,17 @@
-import { StyleSheet, SafeAreaView, Platform } from "react-native";
-import LandingPage from "./component/LandingPage";
-import { LoginPage } from "./component/LoginPage";
-import { RegisterPage } from "./component/RegisterPage";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Test from "./component/Test";
-import { UserProvider } from "./context/userContext";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import Header from './component/Header';
+import LandingPage from './component/LandingPage';
+import NavBar from './component/NavBar';
+import { createUser } from './firebase';
+import { StyleSheet, SafeAreaView, Platform } from 'react-native';
+import LandingPage from './component/LandingPage';
+import { LoginPage } from './component/LoginPage';
+import { RegisterPage } from './component/RegisterPage';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Test from './component/Test';
+import { UserProvider } from './context/userContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +55,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? 25 : 0,
+    paddingTop: Platform.OS === 'android' ? 25 : 0,
   },
 });
