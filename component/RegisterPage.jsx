@@ -82,7 +82,7 @@ export const RegisterPage = ({ navigation }) => {
               <Text style={styles.HaveAccount}>Already have an account?</Text>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("RegisterPage");
+                  navigation.navigate("LoginPage");
                 }}
               >
                 <Text style={styles.Login}>Login</Text>

@@ -1,5 +1,5 @@
 import { InputText } from "./InputText";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { loginUser } from "../firebase";
 import {
   View,
@@ -12,16 +12,22 @@ import {
 } from "react-native";
 import { ButtonLogin } from "./ButtonLogin";
 import { AntDesign } from "@expo/vector-icons";
+import { UserContext } from "../context/userContext";
 
 const { width, height } = Dimensions.get("window");
+
 export const LoginPage = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUserData } = useContext(UserContext);
 
-  const handleRegister = () => {
-    loginUser(email, password);
+  const handleLogin = () => {
+    loginUser(email, password).then((username) => {
+      setUserData(username);
+    });
     setEmail("");
     setPassword("");
+    navigation.replace("TestPage");
   };
 
   return (
@@ -65,7 +71,7 @@ export const LoginPage = ({ navigation }) => {
               opacity={0.62}
               width={0.8}
             />
-            <ButtonLogin text={"Login"} clickFunc={handleRegister} />
+            <ButtonLogin text={"Login"} clickFunc={handleLogin} />
             <Text style={styles.NoAccount}>Don't have an account?</Text>
             <TouchableOpacity
               onPress={() => {

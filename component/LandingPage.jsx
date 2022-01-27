@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ImageBackground,
 } from "react-native";
+import NavBar from "./NavBar";
 import Button from "./Button";
 
 const LandingPage = ({ navigation }) => {
@@ -35,6 +36,7 @@ const LandingPage = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </ImageBackground>
+      <NavBar />
     </View>
   );
 };
