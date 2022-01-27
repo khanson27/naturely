@@ -1,10 +1,10 @@
-import { StyleSheet, SafeAreaView, Platform } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { Test } from "./component/Test";
-import { useContext, useEffect, useState } from "react";
-import { UserProvider, UserContext } from "./context/userContext";
+import { useEffect, useState } from "react";
+import { UserProvider } from "./context/userContext";
 import { BrowsePage } from "./pages/BrowsePage";
 import { HomePage } from "./pages/HomePage";
 import { LandingPage } from "./pages/LandingPage";
@@ -21,6 +21,8 @@ import { UploadType } from "./component/UploadType";
 import { TakePhoto } from "./component/TakePhoto";
 import { SinglePost } from "./component/SinglePost";
 import { auth, onAuthStateChanged } from "./firebase";
+import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 const AuthStack = createStackNavigator();
 
 const AuthStackScreen = () => (
@@ -153,17 +155,117 @@ const PostStackScreen = () => (
   </PostStack.Navigator>
 );
 
-const Tabs = createBottomTabNavigator();
+const Tabs = createMaterialBottomTabNavigator();
 
 const TabsScreen = () => (
-  <Tabs.Navigator>
-    <Tabs.Screen name="Home" component={HomeStackScreen} />
-    <Tabs.Screen name="Map" component={MapStackScreen} />
-    <Tabs.Screen name="Browse" component={BrowseStackScreen} />
-    <Tabs.Screen name="Post" component={PostStackScreen} />
-    <Tabs.Screen name="Profile" component={ProfileStackScreen} />
+  <Tabs.Navigator
+    initialRouteName="Home"
+    activeColor="#fff"
+    // inactiveColor="#fff"
+    shifting={false}
+    barStyle={{
+      backgroundColor: "#253334",
+      paddingTop: 15,
+      paddingBottom: 15,
+      borderWidth: 1,
+      borderColor: "#2f4d40",
+      borderBottomWidth: 1,
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40,
+      overflow: "hidden",
+    }}
+    labeled={false}
+  >
+    <Tabs.Screen
+      name="Home"
+      component={HomeStackScreen}
+      options={{
+        tabBarIcon: ({ focused }) => {
+          return (
+            <>
+              <Ionicons name="home-sharp" size={24} color="white" />
+              {focused ? (
+                <Text style={{ color: "white" }}>•</Text>
+              ) : (
+                <Text></Text>
+              )}
+            </>
+          );
+        },
+      }}
+    />
+
+    <Tabs.Screen
+      name="Map"
+      component={MapStackScreen}
+      options={{
+        tabBarIcon: ({ focused }) => {
+          return (
+            <>
+              <FontAwesome5 name="map-marked-alt" size={24} color="white" />
+              {focused ? (
+                <Text style={{ color: "white" }}>•</Text>
+              ) : (
+                <Text></Text>
+              )}
+            </>
+          );
+        },
+      }}
+    />
+    <Tabs.Screen
+      name="Browse"
+      component={BrowseStackScreen}
+      options={{
+        tabBarIcon: ({ focused }) => {
+          return (
+            <>
+              <FontAwesome5 name="search" size={24} color="white" />
+              {focused ? (
+                <Text style={{ color: "white" }}>•</Text>
+              ) : (
+                <Text></Text>
+              )}
+            </>
+          );
+        },
+      }}
+    />
+    <Tabs.Screen
+      name="Post"
+      component={PostStackScreen}
+      options={{
+        tabBarIcon: ({ focused }) => {
+          return (
+            <>
+              <FontAwesome5 name="plus-circle" size={24} color="white" />
+              {focused ? (
+                <Text style={{ color: "white" }}>•</Text>
+              ) : (
+                <Text></Text>
+              )}
+            </>
+          );
+        },
+      }}
+    />
+    {/*<Tabs.Screen name="Profile" component={ProfileStackScreen} >*/}
   </Tabs.Navigator>
 );
+
+{
+  /* <Tab.Screen
+name="Home"
+component={HomeStackScreen}
+options={{
+  tabBarLabel: 'Home',
+  tabBarIcon: ({ focused }) => (
+    <Text>ICON</Text>
+    //<MaterialCommunityIcons name="Home" color={color} size={26} />
+  ),
+}}
+/> */
+}
 
 const RootStack = createStackNavigator();
 
@@ -171,7 +273,6 @@ export default function App() {
   const [userNow, setUserNow] = useState(false);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      console.log(user);
       if (user) {
         setUserNow(user);
       } else {
