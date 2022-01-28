@@ -20,6 +20,7 @@ import {
   query,
   where,
   arrayUnion,
+  getDoc,
 } from "firebase/firestore";
 import { UserContext } from "./context/userContext";
 import { useContext } from "react";
@@ -132,14 +133,37 @@ const createPost = (description, picUrl, username, tags, location) => {
   });
 };
 
+const getPosts = () => {
+  let postArray = [];
+  return getDocs(collection(firestore, "posts"))
+    .then((arr) => {
+      arr.forEach((doc) => {
+        const docData = doc.data();
+        postArray.push({ ...docData, id: doc.id });
+      });
+      // console.log(postArray);
+      return postArray;
+    })
+    .catch((err) => alert(err.message));
+};
+
+const getUser = (username) => {
+  return getDoc(doc(firestore, "users", username))
+    .then((user) => {
+      return user.data();
+    })
+    .catch((err) => alert(err.message));
+};
 // Exports
 
 export {
   auth,
-  onAuthStateChanged,
   createUser,
-  loginUser,
-  signOutUser,
-  editProfilePicture,
   createPost,
+  editProfilePicture,
+  getPosts,
+  getUser,
+  loginUser,
+  onAuthStateChanged,
+  signOutUser,
 };

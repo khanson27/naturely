@@ -17,8 +17,8 @@ import { UserContext } from "../context/userContext";
 const { width, height } = Dimensions.get("window");
 
 export const LoginPage = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test999@test.com");
+  const [password, setPassword] = useState("test999");
   const { setUserData } = useContext(UserContext);
 
   const handleLogin = () => {
@@ -27,7 +27,6 @@ export const LoginPage = ({ navigation }) => {
     });
     setEmail("");
     setPassword("");
-    navigation.replace("TestPage");
   };
 
   return (
