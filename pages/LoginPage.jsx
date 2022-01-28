@@ -27,7 +27,6 @@ export const LoginPage = ({ navigation }) => {
     });
     setEmail("");
     setPassword("");
-    navigation.replace("NewsFeedPage");
   };
 
   return (
