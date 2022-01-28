@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, Platform, Text } from "react-native";
+import { StyleSheet, SafeAreaView, Platform, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
@@ -182,14 +182,14 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <>
+            <View style={styles.icon}>
               <Ionicons name="home-sharp" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
-            </>
+            </View>
           );
         },
       }}
@@ -201,14 +201,14 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <>
+            <View style={styles.icon}>
               <FontAwesome5 name="map-marked-alt" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
-            </>
+            </View>
           );
         },
       }}
@@ -219,14 +219,14 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <>
+            <View style={styles.icon}>
               <FontAwesome5 name="search" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
-            </>
+            </View>
           );
         },
       }}
@@ -237,14 +237,14 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <>
+            <View style={styles.icon}>
               <FontAwesome5 name="plus-circle" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
-            </>
+            </View>
           );
         },
       }}
@@ -252,20 +252,6 @@ const TabsScreen = () => (
     {/*<Tabs.Screen name="Profile" component={ProfileStackScreen} >*/}
   </Tabs.Navigator>
 );
-
-{
-  /* <Tab.Screen
-name="Home"
-component={HomeStackScreen}
-options={{
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <Text>ICON</Text>
-    //<MaterialCommunityIcons name="Home" color={color} size={26} />
-  ),
-}}
-/> */
-}
 
 const RootStack = createStackNavigator();
 
@@ -314,5 +300,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === "android" ? 25 : 0,
+  },
+
+  icon: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
