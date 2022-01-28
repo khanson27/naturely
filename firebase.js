@@ -6,6 +6,7 @@ import {
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -103,6 +104,14 @@ const loginUser = (email, password) => {
     .catch((err) => alert(err.message));
 };
 
+const signOutUser = () => {
+  return signOut(auth)
+    .then(() => {
+      console.log("Sign out successful");
+    })
+    .catch((err) => alert(err.message));
+};
+
 const editProfilePicture = (url, username) => {
   updateDoc(doc(firestore, "users", username), {
     avatar_url: url,
@@ -130,6 +139,7 @@ export {
   onAuthStateChanged,
   createUser,
   loginUser,
+  signOutUser,
   editProfilePicture,
   createPost,
 };
