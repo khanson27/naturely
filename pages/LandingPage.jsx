@@ -5,20 +5,20 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-} from 'react-native';
-import Button from './Button';
+} from "react-native";
+import Button from "../component/Button";
 
-const LandingPage = ({ navigation }) => {
+export const LandingPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/LandingBackground.jpg')}
+        source={require("../assets/LandingBackground.jpg")}
         resizeMode="cover"
         style={styles.Background}
       >
         <View style={styles.contents}>
           <Image
-            source={require('../assets/naturely-text-only.png')}
+            source={require("../assets/naturely-text-only.png")}
             style={styles.logo}
           />
           <Text style={styles.Welcome}>WELCOME</Text>
@@ -43,70 +43,68 @@ const LandingPage = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   contents: {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
     bottom: 70,
   },
 
   Background: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    minWidth: '100%',
+    justifyContent: "center",
+    alignItems: "center",
+    minWidth: "100%",
   },
 
   logo: {
     top: -270,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '75%',
+    alignItems: "center",
+    justifyContent: "center",
+    width: "75%",
   },
 
   Welcome: {
-    textShadowColor: '#000000',
+    textShadowColor: "#000000",
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 6,
     fontSize: 25,
-    fontWeight: 'bold',
-    color: '#FFF',
+    fontWeight: "bold",
+    color: "#FFF",
     paddingBottom: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   TagLine: {
-    textShadowColor: '#000000',
+    textShadowColor: "#000000",
     textShadowOffset: { width: 0.5, height: 0.5 },
     textShadowRadius: 3,
-    color: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    color: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   NoAccount: {
-    textShadowColor: '#000000',
+    textShadowColor: "#000000",
     textShadowOffset: { width: 0.5, height: 0.5 },
     textShadowRadius: 3,
-    color: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    color: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   SignUp: {
-    textShadowColor: '#000000',
+    textShadowColor: "#000000",
     textShadowOffset: { width: 0.5, height: 0.5 },
     textShadowRadius: 2.5,
-    fontWeight: 'bold',
-    color: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    fontWeight: "bold",
+    color: "#FFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
-
-export default LandingPage;

@@ -1,4 +1,4 @@
-import { InputText } from "./InputText";
+import { InputText } from "../component/InputText";
 import React, { useState } from "react";
 import {
   View,
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { ButtonLogin } from "./ButtonLogin";
+import { ButtonLogin } from "../component/ButtonLogin";
 import { Octicons } from "@expo/vector-icons";
 import { createUser } from "../firebase";
 
