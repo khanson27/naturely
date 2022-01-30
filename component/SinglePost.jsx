@@ -1,9 +1,14 @@
-import { View, Text } from "react-native";
+import { View, Text, Button } from "react-native";
 
-export const SinglePost = () => {
+export const SinglePost = ({ navigation }) => {
   return (
     <View>
-      <Text>Single post</Text>
+      <Button
+        title="users"
+        onPress={() => {
+          navigation.push("UserProfile");
+        }}
+      />
     </View>
   );
 };

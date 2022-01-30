@@ -2,7 +2,6 @@ import { StyleSheet, SafeAreaView, Platform, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { Test } from "./component/Test";
 import { useEffect, useState } from "react";
 import { UserProvider } from "./context/userContext";
 import { BrowsePage } from "./pages/BrowsePage";
@@ -14,15 +13,16 @@ import { PostPage } from "./pages/PostPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { LocateUser } from "./component/LocateUser";
-import { NavBar } from "./component/NavBar";
 import { Header } from "./component/Header";
 import { UsersProfile } from "./component/UsersProfile";
 import { UploadType } from "./component/UploadType";
 import { TakePhoto } from "./component/TakePhoto";
 import { SinglePost } from "./component/SinglePost";
 import { auth, onAuthStateChanged } from "./firebase";
-import { Ionicons } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { TopicProvider } from "./context/topicContext";
+import { PositionProvider } from "./context/positionContext";
+import { ImageProvider } from "./context/imageContext";
 const AuthStack = createStackNavigator();
 
 const AuthStackScreen = () => (
@@ -42,11 +42,6 @@ const AuthStackScreen = () => (
       options={{ headerShown: false }}
       component={RegisterPage}
     />
-    <AuthStack.Screen
-      name="TestPage"
-      options={{ headerShown: false }}
-      component={Test}
-    />
   </AuthStack.Navigator>
 );
 
@@ -55,17 +50,37 @@ const HomeStackScreen = () => (
   <HomeStack.Navigator initialRouteName="HomePage">
     <HomeStack.Screen
       name="HomePage"
-      options={{ headerShown: false }}
+      options={{
+        headerMode: "screen",
+        header: ({ navigation }) => {
+          return <Header title={"Home"} navigation={navigation} />;
+        },
+        headerStyle: {
+          height: 80, // Specify the height of your custom header
+        },
+      }}
       component={HomePage}
     />
     <HomeStack.Screen
       name="SinglePost"
-      options={{ headerShown: false }}
+      options={{
+        title: "Post",
+        headerStyle: {
+          backgroundColor: "#253334",
+        },
+        headerTintColor: "#fff",
+      }}
       component={SinglePost}
     />
     <HomeStack.Screen
       name="UserProfile"
-      options={{ headerShown: false }}
+      options={{
+        title: "Profile",
+        headerStyle: {
+          backgroundColor: "#253334",
+        },
+        headerTintColor: "#fff",
+      }}
       component={UsersProfile}
     />
   </HomeStack.Navigator>
@@ -97,7 +112,15 @@ const ProfileStackScreen = () => (
   <ProfileStack.Navigator initialRouteName="ProfilePage">
     <ProfileStack.Screen
       name="ProfilePage"
-      options={{ headerShown: false }}
+      options={{
+        headerMode: "screen",
+        header: ({ navigation }) => {
+          return <Header title={"Profile"} navigation={navigation} />;
+        },
+        headerStyle: {
+          height: 80, // Specify the height of your custom header
+        },
+      }}
       component={ProfilePage}
     />
     <ProfileStack.Screen
@@ -118,7 +141,15 @@ const BrowseStackScreen = () => (
   <BrowseStack.Navigator initialRouteName="BrowsePage">
     <BrowseStack.Screen
       name="BrowsePage"
-      options={{ headerShown: false }}
+      options={{
+        headerMode: "screen",
+        header: ({ navigation }) => {
+          return <Header title={"Search"} navigation={navigation} />;
+        },
+        headerStyle: {
+          height: 80, // Specify the height of your custom header
+        },
+      }}
       component={BrowsePage}
     />
     <BrowseStack.Screen
@@ -134,13 +165,14 @@ const PostStackScreen = () => (
   <PostStack.Navigator initialRouteName="PostPage">
     <PostStack.Screen
       name="PostPage"
-      options={{ headerShown: false }}
+      options={{
+        title: "Add Post",
+        headerStyle: {
+          backgroundColor: "#253334",
+        },
+        headerTintColor: "#fff",
+      }}
       component={PostPage}
-    />
-    <PostStack.Screen
-      name="UploadType"
-      options={{ headerShown: false }}
-      component={UploadType}
     />
     <PostStack.Screen
       name="LocateUser"
@@ -165,14 +197,14 @@ const TabsScreen = () => (
     shifting={false}
     barStyle={{
       backgroundColor: "#253334",
-      paddingTop: 15,
-      paddingBottom: 15,
-      borderWidth: 1,
-      borderColor: "#2f4d40",
-      borderBottomWidth: 1,
-      borderTopLeftRadius: 40,
-      borderTopRightRadius: 40,
-      overflow: "hidden",
+      paddingTop: 10,
+      paddingBottom: 2,
+      // borderWidth: 1,
+      // borderColor: "#2f4d40",
+      // borderBottomWidth: 1,
+      // borderTopLeftRadius: 40,
+      // borderTopRightRadius: 40,
+      // overflow: "hidden",
     }}
     labeled={false}
   >
@@ -182,7 +214,12 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <View style={styles.icon}>
+            <View
+              style={[
+                styles.icon,
+                { transform: [{ scale: focused ? 1.2 : 1 }] },
+              ]}
+            >
               <Ionicons name="home-sharp" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
@@ -201,7 +238,12 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <View style={styles.icon}>
+            <View
+              style={[
+                styles.icon,
+                { transform: [{ scale: focused ? 1.2 : 1 }] },
+              ]}
+            >
               <FontAwesome5 name="map-marked-alt" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
@@ -219,7 +261,12 @@ const TabsScreen = () => (
       options={{
         tabBarIcon: ({ focused }) => {
           return (
-            <View style={styles.icon}>
+            <View
+              style={[
+                styles.icon,
+                { transform: [{ scale: focused ? 1.2 : 1 }] },
+              ]}
+            >
               <FontAwesome5 name="search" size={24} color="white" />
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
@@ -232,13 +279,19 @@ const TabsScreen = () => (
       }}
     />
     <Tabs.Screen
-      name="Post"
-      component={PostStackScreen}
+      name="Profile"
+      component={ProfileStackScreen}
       options={{
-        tabBarIcon: ({ focused }) => {
+        tabBarIcon: ({ focused, color }) => {
           return (
-            <View style={styles.icon}>
-              <FontAwesome5 name="plus-circle" size={24} color="white" />
+            <View
+              style={[
+                styles.icon,
+                { transform: [{ scale: focused ? 1.2 : 1 }] },
+              ]}
+            >
+              <FontAwesome5 name="user-alt" size={24} color="white" />
+
               {focused ? (
                 <Text style={{ color: "white" }}>•</Text>
               ) : (
@@ -249,7 +302,6 @@ const TabsScreen = () => (
         },
       }}
     />
-    {/*<Tabs.Screen name="Profile" component={ProfileStackScreen} >*/}
   </Tabs.Navigator>
 );
 
@@ -269,29 +321,44 @@ export default function App() {
 
   return (
     <UserProvider>
-      <SafeAreaView style={styles.container}>
-        <NavigationContainer>
-          <RootStack.Navigator>
-            {!userNow ? (
-              <RootStack.Screen
-                name="Auth"
-                component={AuthStackScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-            ) : (
-              <RootStack.Screen
-                name="App"
-                component={TabsScreen}
-                options={{
-                  headerShown: false,
-                }}
-              />
-            )}
-          </RootStack.Navigator>
-        </NavigationContainer>
-      </SafeAreaView>
+      <TopicProvider>
+        <PositionProvider>
+          <ImageProvider>
+            <SafeAreaView style={styles.container}>
+              <NavigationContainer>
+                <RootStack.Navigator>
+                  {!userNow ? (
+                    <RootStack.Screen
+                      name="Auth"
+                      component={AuthStackScreen}
+                      options={{
+                        headerShown: false,
+                      }}
+                    />
+                  ) : (
+                    <>
+                      <RootStack.Screen
+                        name="App"
+                        component={TabsScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                      <RootStack.Screen
+                        name="Post"
+                        component={PostStackScreen}
+                        options={{
+                          headerShown: false,
+                        }}
+                      />
+                    </>
+                  )}
+                </RootStack.Navigator>
+              </NavigationContainer>
+            </SafeAreaView>
+          </ImageProvider>
+        </PositionProvider>
+      </TopicProvider>
     </UserProvider>
   );
 }
@@ -300,6 +367,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === "android" ? 25 : 0,
+    backgroundColor: "#253334",
   },
 
   icon: {
