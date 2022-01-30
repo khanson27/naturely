@@ -18,7 +18,7 @@ import { UsersProfile } from "./component/UsersProfile";
 import { UploadType } from "./component/UploadType";
 import { TakePhoto } from "./component/TakePhoto";
 import { SinglePost } from "./component/SinglePost";
-import { auth, onAuthStateChanged } from "./firebase";
+import { auth, onAuthStateChanged } from "./Server/firebase";
 import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { TopicProvider } from "./context/topicContext";
 import { PositionProvider } from "./context/positionContext";

@@ -22,7 +22,7 @@ import {
   arrayUnion,
   getDoc,
 } from "firebase/firestore";
-import { UserContext } from "./context/userContext";
+import { UserContext } from "../context/userContext";
 import { useContext } from "react";
 
 // TODO: Add SDKs for Firebase products that you want to use

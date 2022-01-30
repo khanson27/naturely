@@ -1,5 +1,5 @@
 import MapView, { Marker, Callout } from "react-native-maps";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import Slider from "@react-native-community/slider";
 import * as Location from "expo-location";
+import { ImageContext } from "../context/imageContext";
 
 const LOCATIONS = [
   [0.02, -0.01],
@@ -21,7 +22,8 @@ const LOCATIONS = [
   [0.008, 0.09],
   [-0.003, -0.2],
 ];
-export const MapPage = ({ img, setImagePage }) => {
+export const MapPage = () => {
+  const { img } = useContext(ImageContext);
   const [userLocation, setUserLocation] = useState(null);
 
   const getLocation = async () => {
@@ -155,46 +157,6 @@ export const MapPage = ({ img, setImagePage }) => {
           ></Marker>
         ) : null}
       </MapView>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          setImagePage(0);
-        }}
-      >
-        <Text style={styles.text}> Back </Text>
-      </TouchableOpacity>
-
-      <Text style={styles.location}>
-        {`location: ${showLocation[0]}, ${showLocation[1]}, ${showLocation[2]}`}
-      </Text>
-
-      <TouchableOpacity
-        style={[styles.bottom]}
-        onPress={() => {
-          map.animateCamera({
-            center: {
-              latitude: userLocation.coords.latitude,
-              longitude: userLocation.coords.longitude,
-            },
-          });
-        }}
-      >
-        <Slider
-          style={{
-            width: 250,
-            height: 70,
-            alignSelf: "center",
-            alignItems: "center",
-          }}
-          minimumValue={0}
-          maximumValue={1}
-          minimumTrackTintColor="#FFFAFF"
-          maximumTrackTintColor="#002300"
-          value={slideValue}
-          onValueChange={(value) => setSlideValue(value)}
-        />
-      </TouchableOpacity>
     </View>
   );
 };
