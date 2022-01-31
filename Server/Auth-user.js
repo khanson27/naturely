@@ -22,7 +22,7 @@ import {
   arrayUnion,
   getDoc,
 } from "firebase/firestore";
-import { UserContext } from "./context/userContext";
+import { UserContext } from "../context/userContext";
 import { useContext } from "react";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -91,19 +91,18 @@ const createUser = (email, password, username) => {
 };
 //uid = docs._firestore._authCredentials.currentUser.uid
 const loginUser = (email, password) => {
-  return signInWithEmailAndPassword(auth, email, password).then(() => {
-    return getDocs(
-      query(collection(firestore, "users"), where("email", "==", email))
-    )
-      .then((docs) => {
-        let username = "";
-        docs.forEach((doc) => {
-          username = doc.id;
-        });
-        return username;
-      })
-      .catch((err) => alert(err.message));
-  });
+  return signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      return getDocs(collection(firestore, "users"));
+    })
+    .then((docs) => {
+      let username = "";
+      docs.forEach((doc) => {
+        if (doc.data().email === email) username = doc.id;
+      });
+      return username;
+    })
+    .catch((err) => alert(err.message));
 };
 
 const signOutUser = () => {

@@ -1,61 +1,80 @@
-import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Image,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
+import React from "react";
+import { Octicons, FontAwesome } from "@expo/vector-icons";
+import { signOutUser } from "../Server/firebase";
 
-const Header = () => {
+export function Header({ title, navigation }) {
+  const openMenu = () => {
+    navigation.navigate("Post");
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity>
-        <Image source={require("../assets/naturely.png")} style={styles.logo} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.userItems}>
-        <Text style={styles.username}>@DefaultUser</Text>
-        <Image
-          source={require("../assets/defaultuser.png")}
-          style={styles.userImg}
+    <View style={styles.header}>
+      <View style={styles.icons}>
+        <TouchableOpacity
+          style={{ paddingRight: 15 }}
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        >
+          <Image
+            source={require("../assets/naturely.png")}
+            style={styles.logo}
+          />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>{title}</Text>
+      </View>
+      <View style={styles.icons}>
+        <FontAwesome
+          name="sign-out"
+          size={45}
+          color="white"
+          onPress={signOutUser}
+          style={{ paddingRight: 15 }}
         />
-      </TouchableOpacity>
+        <Octicons
+          name="diff-added"
+          size={45}
+          color="white"
+          onPress={openMenu}
+        />
+      </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
+  header: {
+    width: Dimensions.get("screen").width,
+    height: 60,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "#253334",
-    top: -310,
-    minHeight: "18%",
-    maxHeight: "18%",
-    borderColor: "#2f4d40",
-    borderWidth: 1,
-    minWidth: "100%",
-    borderRadius: 40,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
+    paddingHorizontal: 20,
   },
-
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "#333",
+    letterSpacing: 1,
+    color: "white",
+    fontStyle: "italic",
+    fontFamily: "serif",
+  },
   logo: {
-    width: 75,
-    height: 75,
-    marginTop: "20%",
-    marginRight: 90,
+    height: 45,
+    width: 45,
   },
-
-  userItems: {
+  icons: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    marginTop: "10%",
-    marginLeft: 50,
-  },
-
-  username: {
-    marginRight: 10,
-    color: "#fff",
-  },
-
-  userImg: {
-    width: 50,
-    height: 50,
   },
 });
-
-export default Header;

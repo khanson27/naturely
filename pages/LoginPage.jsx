@@ -1,6 +1,6 @@
 import { InputText } from "../component/InputText";
 import React, { useState, useContext } from "react";
-import { loginUser } from "../firebase";
+import { loginUser } from "../Server/firebase";
 import {
   View,
   StyleSheet,
