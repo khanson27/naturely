@@ -20,7 +20,7 @@ const CssPostCard = ({ posts }) => {
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: posts.picUrl }} style={styles.image} />
+          <Image source={{ uri: posts.image }} style={styles.image} />
         </View>
         <View style={styles.spacer} />
         <View style={styles.textContainer}>

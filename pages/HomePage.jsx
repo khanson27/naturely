@@ -13,18 +13,21 @@ import CssPostCard from "../component/CssPostCard";
 
 export const HomePage = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsLoading(true);
-    getPosts()
-      .then((postArr) => {
-        setPosts(postArr);
+    getPosts(page)
+      .then((data) => {
+        setPosts((curr) => {
+          return [...curr, ...data];
+        });
       })
       .then(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [page]);
 
   //refresh button which calls get posts again
   return (
@@ -44,12 +47,20 @@ export const HomePage = ({ navigation }) => {
         {isLoading ? (
           <Text>News Feed Loading...</Text>
         ) : (
-          <FlatList
-            data={posts}
-            renderItem={({ item }) => <CssPostCard posts={item} />}
-            keyExtractor={(item) => item.id}
-            style={{ paddingTop: 30 }}
-          />
+          <>
+            <FlatList
+              data={posts}
+              renderItem={({ item }) => <CssPostCard posts={item} />}
+              keyExtractor={(item) => item.id}
+              style={{ paddingTop: 30 }}
+            />
+            <Button
+              title="up page"
+              onPress={() => {
+                setPage(posts[posts.length - 1].createdDate);
+              }}
+            />
+          </>
         )}
       </ImageBackground>
     </View>
