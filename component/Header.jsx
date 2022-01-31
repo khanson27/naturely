@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React from "react";
 import { Octicons, FontAwesome } from "@expo/vector-icons";
-import { signOutUser } from "../Server/firebase";
+import { signOutUser } from "../Server/Auth-user";
 
 export function Header({ title, navigation }) {
   const openMenu = () => {

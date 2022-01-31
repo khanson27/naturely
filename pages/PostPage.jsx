@@ -219,6 +219,7 @@ export const PostPage = ({ navigation }) => {
             dark={true}
             onPress={addPost}
             color="#7C9A92"
+            style={{ width: "35%", paddingVertical: 6 }}
           >
             Post
           </Button>

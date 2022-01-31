@@ -1,6 +1,6 @@
 import { InputText } from "../component/InputText";
 import React, { useState, useContext } from "react";
-import { loginUser } from "../Server/firebase";
+import { loginUser } from "../Server/Auth-user";
 import {
   View,
   StyleSheet,
@@ -13,21 +13,29 @@ import {
 import { ButtonLogin } from "../component/ButtonLogin";
 import { AntDesign } from "@expo/vector-icons";
 import { UserContext } from "../context/userContext";
+import { LoadingPage } from "./LoadingPage";
 
 const { width, height } = Dimensions.get("window");
 
 export const LoginPage = ({ navigation }) => {
   const [email, setEmail] = useState("test999@test.com");
   const [password, setPassword] = useState("test999");
+  const [loading, setLoading] = useState(false);
   const { setUserData } = useContext(UserContext);
 
   const handleLogin = () => {
-    loginUser(email, password).then((username) => {
-      setUserData(username);
+    setLoading(true);
+    loginUser(email, password).then((user) => {
+      setUserData(user);
+      setLoading(false);
     });
     setEmail("");
     setPassword("");
   };
+
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
     <View style={styles.container}>

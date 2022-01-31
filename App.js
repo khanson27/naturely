@@ -2,7 +2,7 @@ import { StyleSheet, SafeAreaView, Platform, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { UserProvider } from "./context/userContext";
 import { BrowsePage } from "./pages/BrowsePage";
 import { HomePage } from "./pages/HomePage";
@@ -10,19 +10,23 @@ import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { MapPage } from "./pages/MapPage";
 import { PostPage } from "./pages/PostPage";
+import { PostingPage } from "./pages/PostingPage";
+import { AddTopicPage } from "./pages/AddTopicPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { ProfilePage } from "./pages/ProfilePage";
 import { LocateUser } from "./component/LocateUser";
 import { Header } from "./component/Header";
 import { UsersProfile } from "./component/UsersProfile";
-import { UploadType } from "./component/UploadType";
 import { TakePhoto } from "./component/TakePhoto";
 import { SinglePost } from "./component/SinglePost";
-import { auth, onAuthStateChanged } from "./Server/firebase";
+import { auth, onAuthStateChanged } from "./Server/Auth-user";
 import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { TopicProvider } from "./context/topicContext";
 import { PositionProvider } from "./context/positionContext";
 import { ImageProvider } from "./context/imageContext";
+import { UserContext } from "./context/userContext";
+import { LoadingPage } from "./pages/LoadingPage";
+
 const AuthStack = createStackNavigator();
 
 const AuthStackScreen = () => (
@@ -162,7 +166,18 @@ const BrowseStackScreen = () => (
 
 const PostStack = createStackNavigator();
 const PostStackScreen = () => (
-  <PostStack.Navigator initialRouteName="PostPage">
+  <PostStack.Navigator initialRouteName="PostingPage">
+    <PostStack.Screen
+      name="PostingPage"
+      options={{
+        title: "Posting",
+        headerStyle: {
+          backgroundColor: "#253334",
+        },
+        headerTintColor: "#fff",
+      }}
+      component={PostingPage}
+    />
     <PostStack.Screen
       name="PostPage"
       options={{
@@ -173,6 +188,17 @@ const PostStackScreen = () => (
         headerTintColor: "#fff",
       }}
       component={PostPage}
+    />
+    <PostStack.Screen
+      name="AddTopicPage"
+      options={{
+        title: "Add Topic",
+        headerStyle: {
+          backgroundColor: "#253334",
+        },
+        headerTintColor: "#fff",
+      }}
+      component={AddTopicPage}
     />
     <PostStack.Screen
       name="LocateUser"
@@ -306,9 +332,44 @@ const TabsScreen = () => (
 );
 
 const RootStack = createStackNavigator();
+const RootStackScreen = ({ userNow }) => {
+  const { userData } = useContext(UserContext);
+  return (
+    <RootStack.Navigator>
+      {!userNow || !userData ? (
+        <RootStack.Screen
+          name="Auth"
+          component={AuthStackScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+      ) : (
+        <>
+          <RootStack.Screen
+            name="App"
+            component={TabsScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <RootStack.Screen
+            name="Post"
+            component={PostStackScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </>
+      )}
+    </RootStack.Navigator>
+  );
+};
 
 export default function App() {
   const [userNow, setUserNow] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -316,9 +377,16 @@ export default function App() {
       } else {
         setUserNow(false);
       }
+      setLoading(false);
     });
   }, []);
-
+  if (loading) {
+    return (
+      <>
+        <LoadingPage />
+      </>
+    );
+  }
   return (
     <UserProvider>
       <TopicProvider>
@@ -326,34 +394,7 @@ export default function App() {
           <ImageProvider>
             <SafeAreaView style={styles.container}>
               <NavigationContainer>
-                <RootStack.Navigator>
-                  {!userNow ? (
-                    <RootStack.Screen
-                      name="Auth"
-                      component={AuthStackScreen}
-                      options={{
-                        headerShown: false,
-                      }}
-                    />
-                  ) : (
-                    <>
-                      <RootStack.Screen
-                        name="App"
-                        component={TabsScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                      <RootStack.Screen
-                        name="Post"
-                        component={PostStackScreen}
-                        options={{
-                          headerShown: false,
-                        }}
-                      />
-                    </>
-                  )}
-                </RootStack.Navigator>
+                <RootStackScreen userNow={userNow} />
               </NavigationContainer>
             </SafeAreaView>
           </ImageProvider>
