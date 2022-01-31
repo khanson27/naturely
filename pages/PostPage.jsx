@@ -12,6 +12,7 @@ import {
 import { PositionContext } from "../context/positionContext";
 import { ImageContext } from "../context/imageContext";
 import { TopicContext } from "../context/topicContext";
+import { UserContext } from "../context/userContext";
 import * as ImagePicker from "expo-image-picker";
 import {
   TextInput,
@@ -23,13 +24,15 @@ import {
   Searchbar,
 } from "react-native-paper";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
-import { createPost } from "../Server/firebase";
+import { createPost } from "../Server/PostsData";
+import { uploadImage } from "../Server/ImageStorage";
 
 const { width, height } = Dimensions.get("window");
 
 export const PostPage = ({ navigation }) => {
   const { postLocation, postLocationName, setPostLocationName } =
     useContext(PositionContext);
+  const { userData } = useContext(UserContext);
   const { img, setImg } = useContext(ImageContext);
   const { topics, setTopics } = useContext(TopicContext);
   const [description, setDescription] = useState("");
@@ -39,7 +42,7 @@ export const PostPage = ({ navigation }) => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
-  const addPost = () => {
+  const addPost = async () => {
     if (
       !selectedTopics.length ||
       img.uri.includes("upload.wikimedia.org") ||
@@ -49,15 +52,26 @@ export const PostPage = ({ navigation }) => {
     ) {
       Alert.alert("Error", "Please fill all required fields");
       return;
+    } else {
+      console.log(postLocation);
+      createPost({
+        description,
+        createdDate: Date.now(),
+        locationName: postLocationName,
+        topics: selectedTopics,
+        Latitude1: postLocation.latitude,
+        Latitude2: postLocation.latitude,
+        Longitude1: postLocation.longitude,
+        Longitude2: postLocation.longitude,
+        likes: [],
+        comments: [],
+        username: userData.username,
+        image: await uploadImage({
+          image: img.uri,
+          path: `posts/${Math.random().toString(36)}`,
+        }),
+      });
     }
-    createPost(
-      description,
-      img.uri,
-      "testuser",
-      selectedTopics,
-      postLocation,
-      postLocationName
-    );
 
     // console.log(
     //   "\nimg: ",

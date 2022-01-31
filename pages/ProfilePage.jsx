@@ -56,8 +56,6 @@ export const ProfilePage = () => {
       const imageURL = await uploadImage({
         image: img.uri,
         path: `user/${user.username}/${Math.random().toString(36)}`,
-        page: "user",
-        username: user.username,
       });
       await editProfilePicture(imageURL, user.username);
       setImg({});

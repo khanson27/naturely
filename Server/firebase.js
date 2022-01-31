@@ -30,14 +30,15 @@ import {
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA0v6KAsqgW1pI3JOsejrWlZ7ZdjG3rKTQ",
-  authDomain: "miniapp-12f4f.firebaseapp.com",
-  databaseURL: "https://miniapp-12f4f-default-rtdb.firebaseio.com",
-  projectId: "miniapp-12f4f",
-  storageBucket: "miniapp-12f4f.appspot.com",
-  messagingSenderId: "196893777154",
-  appId: "1:196893777154:web:e9e643278f07289d70361b",
-  measurementId: "G-GFZBJ2XJK4",
+  apiKey: "AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E",
+  authDomain: "naturely-3428a.firebaseapp.com",
+  databaseURL:
+    "https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "naturely-3428a",
+  storageBucket: "naturely-3428a.appspot.com",
+  messagingSenderId: "171617270088",
+  appId: "1:171617270088:web:9c3ca9ce62ca771d69db7d",
+  measurementId: "G-ZYZ8CXCJYZ",
 };
 
 // Initialize Firebase
@@ -45,6 +46,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const firestore = getFirestore();
-const storage = getStorage();
 
 export { auth, app, firestore };
