@@ -22,7 +22,7 @@ import {
   arrayUnion,
   getDoc,
 } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { UserContext } from "../context/userContext";
 import { useContext } from "react";
 
@@ -122,42 +122,6 @@ const editProfilePicture = (url, username) => {
   }).catch((err) => alert(err.message));
 };
 
-// img:  Object {
-//   "height": 391.42857142857144,
-//   "uri": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fnaturely-6e84b6be-4eb7-45d6-b268-0cde07fef8d2/Camera/b4b26591-48df-48e9-84f4-b0c9e6f9d55c.jpg",
-//   "width": 391.42857142857144,
-// }
-// postLocation  Object {
-//   "latitude": 53.26977772507978,
-//   "latitudeDelta": 0.011524782809331668,
-//   "longitude": -2.461636047810316,
-//   "longitudeDelta": 0.010262466967105865,
-// }
-// postLocationName  Lostock Gralam
-// description  Stuff
-// selectedTopics  Array [
-//   "dog",
-// ]
-
-const uploadImage = async (picUrl, postId) => {
-  const storageRef = ref(storage, postId);
-  fetch(picUrl)
-    .then((image) => {
-      return image.blob();
-    })
-    .then((file) => {
-      uploadBytes(storageRef, file).then((snapshot) => {
-        console.log(snapshot);
-      });
-    });
-
-  // const image = await fetch(picUrl);
-  // const file = image.blob();
-  // uploadBytes(storageRef, file).then((snapshot) => {
-  //   console.log("Uploaded a blob or file!");
-  // });
-};
-
 const createPost = (
   description,
   picUrl,
@@ -174,10 +138,29 @@ const createPost = (
     locationName,
   })
     .then((post) => {
-      uploadImage(picUrl, post.id);
-      return post;
+      return Promise.all([fetch(picUrl), post]);
     })
-    .then((post) => {
+    .then((promise) => {
+      const image = promise[0];
+      const post = promise[1];
+      return Promise.all([image.blob(), post]);
+    })
+    .then((promise) => {
+      const file = promise[0];
+      const post = promise[1];
+      return Promise.all([uploadBytes(ref(storage, post.id), file), post]);
+    })
+    .then((promise) => {
+      const post = promise[1];
+      return Promise.all([getDownloadURL(ref(storage, post.id)), post]);
+    })
+    .then((promise) => {
+      const url = promise[0];
+      const post = promise[1];
+      console.log(url);
+      updateDoc(doc(firestore, "posts", post.id), {
+        picUrl: url,
+      });
       updateDoc(doc(firestore, "users", username), {
         posts: arrayUnion(post.id),
       }).catch((err) => alert(err.message));
