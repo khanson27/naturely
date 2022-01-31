@@ -23,6 +23,7 @@ import {
   Searchbar,
 } from "react-native-paper";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
+import { createPost } from "../Server/firebase";
 
 const { width, height } = Dimensions.get("window");
 
@@ -49,13 +50,27 @@ export const PostPage = ({ navigation }) => {
       Alert.alert("Error", "Please fill all required fields");
       return;
     }
-    console.log(
-      img,
-      postLocation,
-      postLocationName,
+    createPost(
       description,
-      selectedTopics
+      img.uri,
+      "testuser",
+      selectedTopics,
+      postLocation,
+      postLocationName
     );
+
+    // console.log(
+    //   "\nimg: ",
+    //   img,
+    //   "\npostLocation ",
+    //   postLocation,
+    //   "\npostLocationName ",
+    //   postLocationName,
+    //   "\ndescription ",
+    //   description,
+    //   "\nselectedTopics ",
+    //   selectedTopics
+    // );
   };
 
   const getTopics = (query) => {

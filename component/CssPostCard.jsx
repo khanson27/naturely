@@ -34,7 +34,7 @@ const CssPostCard = ({ posts }) => {
               numberOfLines={1}
               style={styles.locationText}
             >
-              {posts.location}
+              {posts.locationName}
             </Text>
           </View>
           <Text style={styles.usernameText}>{posts.username}</Text>
