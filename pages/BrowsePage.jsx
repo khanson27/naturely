@@ -7,11 +7,16 @@ import {
   Dimensions,
   ImageBackground,
 } from 'react-native';
+import { getPopularUsers } from '../Server/firebase';
 import { useState } from 'react';
 const { width, height } = Dimensions.get('window');
 
 export const BrowsePage = () => {
   const [query, setQuery] = useState('');
+
+  const handlePress = () => {
+    getPopularUsers();
+  };
 
   return (
     <View>
@@ -30,7 +35,7 @@ export const BrowsePage = () => {
             opacity={0.62}
             width={0.8}
           />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handlePress}>
             <Text style={styles.logInText}>search</Text>
           </TouchableOpacity>
         </View>

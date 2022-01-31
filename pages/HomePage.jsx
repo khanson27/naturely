@@ -7,10 +7,9 @@ import {
   Button,
   ImageBackground,
 } from "react-native";
-import { getPosts } from "../firebase";
+import { getPosts } from "../Server/firebase";
 import { useState, useEffect } from "react";
 import CssPostCard from "../component/CssPostCard";
-import { signOutUser } from "../firebase";
 
 export const HomePage = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
@@ -36,6 +35,12 @@ export const HomePage = ({ navigation }) => {
         style={styles.Background}
         blurRadius={5}
       >
+        <Button
+          title="single screen"
+          onPress={() => {
+            navigation.push("SinglePost");
+          }}
+        />
         {isLoading ? (
           <Text>News Feed Loading...</Text>
         ) : (
@@ -43,9 +48,9 @@ export const HomePage = ({ navigation }) => {
             data={posts}
             renderItem={({ item }) => <CssPostCard posts={item} />}
             keyExtractor={(item) => item.id}
+            style={{ paddingTop: 30 }}
           />
         )}
-        <Button onPress={signOutUser} title="Sign out" />
       </ImageBackground>
     </View>
   );

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { ButtonLogin } from "../component/ButtonLogin";
 import { Octicons } from "@expo/vector-icons";
-import { createUser } from "../firebase";
+import { createUser } from "../Server/firebase";
 
 const { width, height } = Dimensions.get("window");
 export const RegisterPage = ({ navigation }) => {
