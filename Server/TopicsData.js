@@ -11,25 +11,25 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-const createComment = (CommentInfo) => {
-  addDoc(collection(firestore, "comments"), CommentInfo)
-    .then((Comment) => {
-      return Comment;
+const createTopic = (TopicInfo) => {
+  addDoc(collection(firestore, "topics"), TopicInfo)
+    .then(() => {
+      return null;
     })
     .catch((err) => alert(err.message));
 };
 
-const getComments = () => {
-  const CommentArray = [];
-  return getDocs(collection(firestore, "comments"))
+const getTopics = () => {
+  const TopicArray = [];
+  return getDocs(collection(firestore, "topics"))
     .then((arr) => {
       arr.forEach((doc) => {
         const docData = doc.data();
-        CommentArray.push({ ...docData, id: doc.id });
+        TopicArray.push({ ...docData, id: doc.id });
       });
-      return CommentArray;
+      return TopicArray;
     })
     .catch((err) => alert(err.message));
 };
 
-export { createComment, getComments };
+export { createTopic, getTopics };
