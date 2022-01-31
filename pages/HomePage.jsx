@@ -7,7 +7,7 @@ import {
   Button,
   ImageBackground,
 } from "react-native";
-import { getPosts } from "../Server/firebase";
+import { getPosts } from "../Server/PostsData";
 import { useState, useEffect } from "react";
 import CssPostCard from "../component/CssPostCard";
 

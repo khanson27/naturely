@@ -4,9 +4,9 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-} from "react-native";
-import React, { useState } from "react";
-import { Chip } from "react-native-paper";
+} from 'react-native';
+import React, { useState } from 'react';
+import { Chip } from 'react-native-paper';
 
 const CssPostCard = ({ posts }) => {
   const [addComment, setAddComment] = useState(true);
@@ -14,20 +14,20 @@ const CssPostCard = ({ posts }) => {
   return (
     <TouchableWithoutFeedback
       onLongPress={() => {
-        console.log("post pressed");
+        console.log('post pressed');
       }}
       activeOpacity={0.5}
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: posts.picUrl }} style={styles.image} />
+          <Image source={{ uri: posts.image }} style={styles.image} />
         </View>
         <View style={styles.spacer} />
         <View style={styles.textContainer}>
           <View style={styles.locationTextContainer}>
             <Image
               style={styles.locationIcon}
-              source={require("../assets/location-pin.png")}
+              source={require('../assets/location-pin.png')}
             />
             <Text
               ellipsizeMode="tail"
@@ -54,14 +54,14 @@ const CssPostCard = ({ posts }) => {
               <Chip
                 style={styles.chip}
                 icon="thumb-up-outline"
-                textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
+                textStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
               >
                 9
               </Chip>
               <Chip
                 style={styles.chip}
                 icon="comment-outline"
-                textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
+                textStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
               >
                 9
               </Chip>
@@ -78,17 +78,17 @@ export default CssPostCard;
 const styles = StyleSheet.create({
   container: {
     height: 250,
-    backgroundColor: "#FCFFEF",
+    backgroundColor: '#FCFFEF',
     marginVertical: 5,
     marginHorizontal: 10,
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 20,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   image: {
     flex: 1,
-    backgroundColor: "#FCFFEF",
+    backgroundColor: '#FCFFEF',
     borderRadius: 5,
   },
   imageContainer: {
@@ -101,11 +101,11 @@ const styles = StyleSheet.create({
     width: 10,
   },
   locationTextContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   locationText: {
-    color: "#7C9A92",
+    color: '#7C9A92',
     fontSize: 13,
     marginRight: 5,
   },
@@ -115,34 +115,34 @@ const styles = StyleSheet.create({
   },
   usernameText: {
     marginLeft: 5,
-    color: "#253334",
+    color: '#253334',
     fontSize: 25,
   },
   descriptionText: {
     marginLeft: 5,
-    color: "#253334",
+    color: '#253334',
     fontSize: 15,
   },
   tagsText: {
     marginLeft: 5,
-    color: "#7C9A92",
+    color: '#7C9A92',
     fontSize: 13,
   },
   timeText: {
     marginLeft: 5,
-    color: "#253334",
+    color: '#253334',
     fontSize: 11,
   },
   chipContainer: {
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   chipItem: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   chip: {
     marginLeft: 10,
-    backgroundColor: "#7C9A92",
+    backgroundColor: '#7C9A92',
   },
 });

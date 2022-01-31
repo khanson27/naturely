@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need.
-
-import { initializeApp } from "firebase/app";
+import { app, auth, firestore } from "./firebase.js";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -22,93 +21,52 @@ import {
   arrayUnion,
   getDoc,
 } from "firebase/firestore";
-import { UserContext } from "../context/userContext";
-import { useContext } from "react";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E",
-  authDomain: "naturely-3428a.firebaseapp.com",
-  databaseURL:
-    "https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "naturely-3428a",
-  storageBucket: "naturely-3428a.appspot.com",
-  messagingSenderId: "171617270088",
-  appId: "1:171617270088:web:9c3ca9ce62ca771d69db7d",
-};
-
-// Initialize Firebase
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const firestore = getFirestore();
-
-// Util Functions
-
-const createUser = (email, password, username) => {
+const createUser = async (email, password, username) => {
   const docObj = {
     email,
     avatar_url:
       "https://firebasestorage.googleapis.com/v0/b/naturely-3428a.appspot.com/o/defaultuser.png?alt=media&token=c380dc03-d0b1-4d03-8c63-2854828ad027",
     creationDate: Date.now(),
-    posts: [],
-    comments: [],
+    // posts: [],
+    // comments: [], no need for those every comment and post will have a username data entry
+    followers: [],
+    following: [],
+    username: username,
   };
-
-  getDocs(collection(firestore, "users"))
-    .then((userArr) => {
-      userArr.forEach((user) => {
-        if (user.id === username) {
-          throw { message: "username already exists" };
-        }
-      });
-    })
-    .then(() => {
-      return setDoc(doc(firestore, "users", username), docObj);
-    })
-    .then(() => {
-      return createUserWithEmailAndPassword(auth, email, password);
-    })
-    .then(({ user }) => {
-      setDoc(
-        doc(firestore, "users", username),
-        {
-          auth_id: user.uid,
-        },
-        {
-          merge: true,
-        }
-      );
-    })
-    .catch((err) => {
-      alert(err.message);
-    });
+  try {
+    const findUsername = await getDocs(
+      query(collection(firestore, "users"), where("username", "==", username))
+    );
+    if (!findUsername.empty) throw { message: "username already exists" };
+    await createUserWithEmailAndPassword(auth, email, password);
+    docObj.userId = getAuth().currentUser.uid;
+    setDoc(doc(firestore, "users", username), docObj);
+  } catch (err) {
+    alert(err.message);
+  }
 };
-//uid = docs._firestore._authCredentials.currentUser.uid
-const loginUser = (email, password) => {
-  return signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      return getDocs(collection(firestore, "users"));
-    })
-    .then((docs) => {
-      let username = "";
-      docs.forEach((doc) => {
-        if (doc.data().email === email) username = doc.id;
-      });
-      return username;
-    })
-    .catch((err) => alert(err.message));
+
+const loginUser = async (email, password) => {
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    const userData = await getDocs(
+      query(collection(firestore, "users"), where("email", "==", email))
+    );
+    let user = {};
+    userData.forEach((doc) => {
+      user = doc.data();
+    });
+    return user;
+  } catch (err) {
+    alert(err.message);
+  }
 };
 
 const signOutUser = () => {
   return signOut(auth)
     .then(() => {
-      console.log("Sign out successful");
+      alert("visit us again soon!");
     })
     .catch((err) => alert(err.message));
 };
@@ -119,51 +77,53 @@ const editProfilePicture = (url, username) => {
   }).catch((err) => alert(err.message));
 };
 
-const createPost = (description, picUrl, username, tags, location) => {
-  addDoc(collection(firestore, "posts"), {
-    description,
-    picUrl,
-    username,
-    tags,
-    location,
-  }).then((post) => {
-    updateDoc(doc(firestore, "users", username), {
-      posts: arrayUnion(post.id),
-    }).catch((err) => alert(err.message));
-  });
-};
-
-const getPosts = () => {
-  let postArray = [];
-  return getDocs(collection(firestore, "posts"))
+const getUsers = async () => {
+  const usersArray = [];
+  return getDocs(collection(firestore, "users"))
     .then((arr) => {
       arr.forEach((doc) => {
         const docData = doc.data();
-        postArray.push({ ...docData, id: doc.id });
+        usersArray.push({ ...docData });
       });
-      // console.log(postArray);
-      return postArray;
+      return usersArray;
     })
-    .catch((err) => alert(err.message));
+    .catch((err) => {}); // alert(err.message));
 };
 
-const getUser = (username) => {
-  return getDoc(doc(firestore, "users", username))
-    .then((user) => {
-      return user.data();
-    })
-    .catch((err) => alert(err.message));
+const getUser = async (username) => {
+  try {
+    const user = await getDoc(doc(firestore, "users", username));
+    return user.data();
+  } catch (err) {
+    alert(err.message);
+  }
 };
-// Exports
+
+const getUsersFollow = async (users, follow) => {
+  try {
+    const users = await getDocs(
+      query(
+        collection(firestore, "users"),
+        where(follow, "contains", user.username)
+      )
+    );
+    const user = [];
+    userData.forEach((doc) => {
+      user.push(doc.data());
+    });
+    return user;
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
 export {
   auth,
   createUser,
-  createPost,
   editProfilePicture,
-  getPosts,
   getUser,
   loginUser,
   onAuthStateChanged,
   signOutUser,
+  getUsers,
 };

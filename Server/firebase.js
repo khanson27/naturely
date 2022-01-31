@@ -10,6 +10,7 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
+  getStorage,
   setDoc,
   doc,
   getDocs,
@@ -22,9 +23,6 @@ import {
   arrayUnion,
   getDoc,
 } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
-import { UserContext } from '../context/userContext';
-import { useContext } from 'react';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -33,14 +31,14 @@ import { useContext } from 'react';
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E',
-  authDomain: 'naturely-3428a.firebaseapp.com',
-  databaseURL:
-    'https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app',
-  projectId: 'naturely-3428a',
-  storageBucket: 'naturely-3428a.appspot.com',
-  messagingSenderId: '171617270088',
-  appId: '1:171617270088:web:9c3ca9ce62ca771d69db7d',
+  apiKey: 'AIzaSyA0v6KAsqgW1pI3JOsejrWlZ7ZdjG3rKTQ',
+  authDomain: 'miniapp-12f4f.firebaseapp.com',
+  databaseURL: 'https://miniapp-12f4f-default-rtdb.firebaseio.com',
+  projectId: 'miniapp-12f4f',
+  storageBucket: 'miniapp-12f4f.appspot.com',
+  messagingSenderId: '196893777154',
+  appId: '1:196893777154:web:e9e643278f07289d70361b',
+  measurementId: 'G-GFZBJ2XJK4',
 };
 
 // Initialize Firebase
@@ -48,9 +46,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const firestore = getFirestore();
-const storage = getStorage();
-
-// Util Functions
+// storage = getStorage();
 
 const createUser = (email, password, username) => {
   const docObj = {
@@ -139,24 +135,26 @@ const editProfilePicture = (url, username) => {
 //   "dog",
 // ]
 
-const uploadImage = async (picUrl, postId) => {
-  const storageRef = ref(storage, postId);
-  fetch(picUrl)
-    .then((image) => {
-      return image.blob();
-    })
-    .then((file) => {
-      uploadBytes(storageRef, file).then((snapshot) => {
-        console.log(snapshot);
-      });
-    });
+// LINES 140-150 UNCOMMENT
 
-  // const image = await fetch(picUrl);
-  // const file = image.blob();
-  // uploadBytes(storageRef, file).then((snapshot) => {
-  //   console.log("Uploaded a blob or file!");
-  // });
-};
+// const uploadImage = async (picUrl, postId) => {
+//   const storageRef = ref(storage, postId);
+//   fetch(picUrl)
+//     .then((image) => {
+//       return image.blob();
+//     })
+//     .then((file) => {
+//       uploadBytes(storageRef, file).then((snapshot) => {
+//         console.log(snapshot);
+//       });
+//     });
+
+// const image = await fetch(picUrl);
+// const file = image.blob();
+// uploadBytes(storageRef, file).then((snapshot) => {
+//   console.log("Uploaded a blob or file!");
+// });
+//};
 
 const createPost = (
   description,
@@ -206,21 +204,20 @@ const getUser = (username) => {
     .catch((err) => alert(err.message));
 };
 
-const getPopularUsers = () => {
+const getUsers = () => {
   let usersArray = [];
   return getDocs(collection(firestore, 'users'))
     .then((arr) => {
-      arr.forEach((doc) => {
-        const docData = doc.data();
+      arr.forEach((user) => {
+        const userData = user.data();
         if (usersArray.length < 3) {
-          usersArray.push({ ...docData, id: doc.id });
+          usersArray.push({ ...userData, id: user.userId });
         }
       });
       return usersArray;
     })
     .catch((err) => alert(err.message));
 };
-
 // Exports
 
 export {
@@ -233,5 +230,7 @@ export {
   loginUser,
   onAuthStateChanged,
   signOutUser,
-  getPopularUsers,
+  getUsers,
+  firestore,
+  app,
 };

@@ -1,25 +1,37 @@
 import {
   View,
   Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Dimensions,
   ImageBackground,
+  StyleSheet,
+  Button,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
 } from 'react-native';
-import { getPopularUsers } from '../Server/firebase';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getUsers } from '../Server/firebase';
+import TopUsersCard from '../component/TopUsersCard';
 const { width, height } = Dimensions.get('window');
 
 export const BrowsePage = () => {
+  const [users, setUsers] = useState([]);
   const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handlePress = () => {
-    getPopularUsers();
-  };
+  useEffect(() => {
+    setIsLoading(true);
+    getUsers()
+      .then((usersArr) => {
+        setUsers(usersArr);
+      })
+      .then(() => {
+        setIsLoading(false);
+      });
+  }, []);
 
   return (
-    <View>
+    <View style={styles.container}>
       <ImageBackground
         source={require('../assets/backgroundlogin.png')}
         resizeMode="cover"
@@ -35,11 +47,22 @@ export const BrowsePage = () => {
             opacity={0.62}
             width={0.8}
           />
-          <TouchableOpacity style={styles.button} onPress={handlePress}>
+          <TouchableOpacity style={styles.button}>
             <Text style={styles.logInText}>search</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.container}></View>
+        <View style={styles.topicsBox}>
+          {isLoading ? (
+            <Text>Browse is Loading...</Text>
+          ) : (
+            <FlatList
+              data={users}
+              renderItem={({ item }) => <TopUsersCard users={item} />}
+              keyExtractor={(item) => item.userId}
+              style={{ paddingTop: 30 }}
+            />
+          )}
+        </View>
       </ImageBackground>
     </View>
   );
@@ -91,17 +114,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    height: 250,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  topicsBox: {
+    height: 260,
     backgroundColor: '#FCFFEF',
     marginVertical: 5,
     marginHorizontal: 10,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
     borderRadius: 20,
     flexDirection: 'row',
+    width: 250,
   },
   Background: {
     height: '100%',
     width: '100%',
   },
 });
+
+// <Button
+// title="single screen"
+// onPress={() => {
+//   navigation.push('SingleUser');
+// }}
+// />
