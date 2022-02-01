@@ -10,8 +10,9 @@ import {
   Picker,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { getUsers } from "../Server/firebase";
+import { firestore, getUsers } from "../Server/firebase";
 import TopUsersCard from "../component/TopUsersCard";
+import { searchFromBrowse } from "../Server/firebase";
 const { width, height } = Dimensions.get("window");
 
 export const BrowsePage = () => {
@@ -32,8 +33,9 @@ export const BrowsePage = () => {
   }, []);
 
   const handleSearch = () => {
-    const searchArray = [];
-    return getDocs(collection(firestore, "topics"));
+    searchFromBrowse(selection, query).then((searchResult) => {
+      console.log(searchResult);
+    });
   };
 
   return (
