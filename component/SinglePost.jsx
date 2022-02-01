@@ -1,6 +1,6 @@
 import { View, Text, Button } from "react-native";
 import { useEffect, useState } from "react";
-import { PostContext } from "../context/postContext";
+
 import { getSinglePost } from "../Server/PostsData";
 
 export const SinglePost = ({ navigation, route }) => {
@@ -21,5 +21,3 @@ export const SinglePost = ({ navigation, route }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({});
