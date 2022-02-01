@@ -4,19 +4,29 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
+<<<<<<< HEAD
 } from 'react-native';
 import React, { useState } from 'react';
 import { Chip } from 'react-native-paper';
 import { timeSince } from '../utils/pastTime';
+=======
+} from "react-native";
+import React, { useState, useContext } from "react";
+import { Chip } from "react-native-paper";
+import { timeSince } from "../utils/pastTime";
+>>>>>>> main
 
 const CssPostCard = ({ posts, navigation }) => {
   const [addComment, setAddComment] = useState(true);
-
   return (
     <TouchableWithoutFeedback
       onLongPress={() => {
+<<<<<<< HEAD
         console.log('post pressed');
         navigation.push('SinglePost', {
+=======
+        navigation.push("SinglePost", {
+>>>>>>> main
           postId: posts.id,
         });
       }}

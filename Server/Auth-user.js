@@ -117,6 +117,12 @@ const getUsersFollow = async (users, follow) => {
   }
 };
 
+// const deleteUser = (username, auth) =>{
+//   deleteDoc(collection('firestore', 'users', username)).then((user)=>{
+//     return Alert.alert('You have deleted your account')
+//   })
+// }
+
 export {
   auth,
   createUser,
