@@ -3,20 +3,21 @@ import {
   Text,
   ImageBackground,
   StyleSheet,
-  Button,
   FlatList,
   TouchableOpacity,
   Dimensions,
   TextInput,
-} from 'react-native';
-import { useState, useEffect } from 'react';
-import { getUsers } from '../Server/firebase';
-import TopUsersCard from '../component/TopUsersCard';
-const { width, height } = Dimensions.get('window');
+  Picker,
+} from "react-native";
+import { useState, useEffect } from "react";
+import { getUsers } from "../Server/firebase";
+import TopUsersCard from "../component/TopUsersCard";
+const { width, height } = Dimensions.get("window");
 
 export const BrowsePage = () => {
   const [users, setUsers] = useState([]);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
+  const [selection, setSelection] = useState("topics");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,28 +31,43 @@ export const BrowsePage = () => {
       });
   }, []);
 
+  const handleSearch = () => {
+    const searchArray = [];
+    return getDocs(collection(firestore, "topics"));
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/backgroundlogin.png')}
+        source={require("../assets/backgroundlogin.png")}
         resizeMode="cover"
         style={styles.Background}
         blurRadius={5}
       >
-        <View style={styles.input}>
-          <TextInput
-            style={styles.searchBar}
-            onChangeText={setQuery}
-            text={query}
-            placeholder="Search..."
-            opacity={0.62}
-            width={0.8}
-          />
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.logInText}>search</Text>
-          </TouchableOpacity>
+        <View style={styles.allSearch}>
+          <View style={styles.input}>
+            <TextInput
+              style={styles.searchBar}
+              onChangeText={setQuery}
+              text={query}
+              placeholder="Search..."
+              opacity={0.62}
+              width={0.8}
+            />
+            <TouchableOpacity style={styles.button} onPress={handleSearch}>
+              <Text style={styles.logInText}>search</Text>
+            </TouchableOpacity>
+          </View>
+          <Picker
+            style={styles.picker}
+            selectedValue={selection}
+            onValueChange={(itemValue, itemIndex) => setSelection(itemValue)}
+          >
+            <Picker.Item label="Topics" value="topics" />
+            <Picker.Item label="Users" value="users" />
+          </Picker>
         </View>
-        <View style={styles.topicsBox}>
+        <View style={styles.usersBox}>
           {isLoading ? (
             <Text>Browse is Loading...</Text>
           ) : (
@@ -59,7 +75,7 @@ export const BrowsePage = () => {
               data={users}
               renderItem={({ item }) => <TopUsersCard users={item} />}
               keyExtractor={(item) => item.userId}
-              style={{ paddingTop: 30 }}
+              style={{ paddingTop: 10 }}
             />
           )}
         </View>
@@ -69,17 +85,36 @@ export const BrowsePage = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    alignContent: "center",
+  },
+
   input: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignSelf: 'flex-start',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignSelf: "flex-start",
+  },
+
+  allSearch: {
+    marginTop: 10,
+    alignItems: "center",
+    flexDirection: "row",
+  },
+
+  picker: {
+    height: 25,
+    width: 80,
+    justifyContent: "center",
   },
   searchBar: {
     flex: 0.55,
-    alignItems: 'center',
+    alignItems: "center",
     height: 40,
-    minWidth: 290,
-    maxWidth: 295,
+    minWidth: 180,
+    maxWidth: 180,
     height: 35,
     borderWidth: 1,
     borderRadius: 25,
@@ -88,14 +123,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   button: {
-    backgroundColor: '#7C9A92',
+    backgroundColor: "#7C9A92",
     padding: 2,
-    borderColor: '#2f4d40',
+    borderColor: "#2f4d40",
     borderWidth: 1,
     borderRadius: 25,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -108,27 +143,23 @@ const styles = StyleSheet.create({
     maxWidth: 85,
   },
   logInText: {
-    color: '#FFF',
+    color: "#FFF",
     fontSize: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
+    alignContent: "center",
+    justifyContent: "center",
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  topicsBox: {
-    height: 260,
-    backgroundColor: '#FCFFEF',
-    marginVertical: 5,
-    marginHorizontal: 10,
+  usersBox: {
+    marginTop: 75,
+    height: 220,
+    backgroundColor: "#FCFFEF",
     borderRadius: 20,
-    flexDirection: 'row',
-    width: 250,
+    flexDirection: "row",
+    width: 310,
+    alignSelf: "center",
   },
   Background: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
 });
 
