@@ -8,18 +8,22 @@ import {
   Dimensions,
   TextInput,
   Picker,
-} from "react-native";
-import { useState, useEffect } from "react";
-import { firestore, getUsers } from "../Server/firebase";
-import TopUsersCard from "../component/TopUsersCard";
-import { searchFromBrowse } from "../Server/firebase";
-const { width, height } = Dimensions.get("window");
+} from 'react-native';
+import { getTopics } from '../Server/TopicsData';
+import { useState, useEffect } from 'react';
+import { firestore, getUsers } from '../Server/firebase';
+import TopUsersCard from '../component/TopUsersCard';
+import { searchFromBrowse } from '../Server/firebase';
+import { BrowseTopics } from '../component/BrowseTopics';
+const { width, height } = Dimensions.get('window');
 
 export const BrowsePage = () => {
   const [users, setUsers] = useState([]);
-  const [query, setQuery] = useState("");
-  const [selection, setSelection] = useState("topics");
+  const [query, setQuery] = useState('');
+  const [topicsArray, setTopicsArray] = useState([]);
+  const [selection, setSelection] = useState('topics');
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedTopics, setSelectedTopics] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -32,6 +36,12 @@ export const BrowsePage = () => {
       });
   }, []);
 
+  useEffect(() => {
+    getTopics().then((topicList) => {
+      setTopicsArray(topicList);
+    });
+  }, []);
+
   const handleSearch = () => {
     searchFromBrowse(selection, query).then((searchResult) => {
       console.log(searchResult);
@@ -41,7 +51,7 @@ export const BrowsePage = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require("../assets/backgroundlogin.png")}
+        source={require('../assets/backgroundlogin.png')}
         resizeMode="cover"
         style={styles.Background}
         blurRadius={5}
@@ -76,10 +86,16 @@ export const BrowsePage = () => {
             <FlatList
               data={users}
               renderItem={({ item }) => <TopUsersCard users={item} />}
-              keyExtractor={(item) => item.userId}
+              keyExtractor={(item) => item.auth_id}
               style={{ paddingTop: 10 }}
             />
           )}
+        </View>
+        <View style={styles.topicsWrap}>
+          <BrowseTopics
+            setSelectedTopics={setSelectedTopics}
+            selectedTopics={selectedTopics}
+          />
         </View>
       </ImageBackground>
     </View>
@@ -89,31 +105,31 @@ export const BrowsePage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
   },
 
   input: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignSelf: "flex-start",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-start',
   },
 
   allSearch: {
     marginTop: 10,
-    alignItems: "center",
-    flexDirection: "row",
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 
   picker: {
     height: 25,
     width: 80,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   searchBar: {
     flex: 0.55,
-    alignItems: "center",
+    alignItems: 'center',
     height: 40,
     minWidth: 180,
     maxWidth: 180,
@@ -125,14 +141,14 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   button: {
-    backgroundColor: "#7C9A92",
+    backgroundColor: '#7C9A92',
     padding: 2,
-    borderColor: "#2f4d40",
+    borderColor: '#2f4d40',
     borderWidth: 1,
     borderRadius: 25,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -145,23 +161,35 @@ const styles = StyleSheet.create({
     maxWidth: 85,
   },
   logInText: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 20,
-    alignContent: "center",
-    justifyContent: "center",
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   usersBox: {
     marginTop: 75,
     height: 220,
-    backgroundColor: "#FCFFEF",
+    backgroundColor: '#FCFFEF',
     borderRadius: 20,
-    flexDirection: "row",
+    flexDirection: 'row',
     width: 310,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   Background: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
+  },
+  topicsWrap: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: '90%',
+    marginBottom: 10,
+    backgroundColor: '#FCFFEF',
   },
 });
 

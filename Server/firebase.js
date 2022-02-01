@@ -218,6 +218,38 @@ const getUsers = () => {
     })
     .catch((err) => alert(err.message));
 };
+
+const searchFromBrowse = (selection, queryTerm) => {
+  const searchArray = [];
+  if (selection === 'users') {
+    return getDocs(
+      query(collection(firestore, 'users'), where('username', '==', queryTerm))
+    )
+      .then((users) => {
+        users.forEach((user) => {
+          const userData = user.data;
+          searchArray.push({ ...userData, id: user.id });
+        });
+        console.log(searchArray);
+        return searchArray;
+      })
+      .catch((err) => alert(err.message));
+  } else if (selection === 'topics') {
+    return getDocs(
+      query(collection(firestore, 'posts'), where('topics(0)', '==', queryTerm))
+    ) //Should it be posts/topics ? To access nested topics array.
+      .then((posts) => {
+        posts.forEach((post) => {
+          const postData = post.data;
+          searchArray.push({ ...postData, id: post.id });
+        });
+        console.log(searchArray);
+        return searchArray;
+      })
+      .catch((err) => alert(err.message));
+  }
+};
+
 // Exports
 
 export {
@@ -233,4 +265,5 @@ export {
   getUsers,
   firestore,
   app,
+  searchFromBrowse,
 };
