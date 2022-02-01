@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -6,14 +6,14 @@ import {
   Image,
   ScrollView,
   Pressable,
-} from 'react-native';
-import { getTopics } from '../Server/TopicsData';
-import { LoadingPage } from '../pages/LoadingPage';
+} from "react-native";
+import { getTopics } from "../Server/TopicsData";
+import { LoadingPage } from "../pages/LoadingPage";
 
 export const BrowseTopics = ({ setSelectedTopics, selectedTopics }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [topics, setTopics] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
@@ -50,8 +50,8 @@ export const BrowseTopics = ({ setSelectedTopics, selectedTopics }) => {
                   styles.borderImg,
                   {
                     borderColor: selectedTopics.includes(topic.title)
-                      ? '#7C9A92'
-                      : '#eee',
+                      ? "#7C9A92"
+                      : "#eee",
                   },
                 ]}
               >
@@ -73,25 +73,25 @@ export const BrowseTopics = ({ setSelectedTopics, selectedTopics }) => {
 
 const styles = StyleSheet.create({
   topicsWrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    backgroundColor: "white",
     borderRadius: 20,
-    width: '90%',
+    width: "90%",
     marginBottom: 10,
   },
   topics: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 40,
   },
   borderImg: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   center: {
-    alignItems: 'center',
+    alignItems: "center",
     margin: 10,
   },
 });
