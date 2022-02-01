@@ -11,6 +11,8 @@ import {
   Dimensions,
   Alert,
   Pressable,
+  TouchableOpacity,
+  ImageBackground,
 } from "react-native";
 import {
   TextInput,
@@ -21,11 +23,11 @@ import {
   Provider,
   Searchbar,
 } from "react-native-paper";
+import { Icon } from "react-native-elements";
 import { getUser } from "../Server/Auth-user";
 import { uploadImage } from "../Server/ImageStorage";
 import { editProfilePicture } from "../Server/Auth-user";
 import { LoadingPage } from "./LoadingPage";
-
 export const ProfilePage = () => {
   const { userData } = useContext(UserContext);
   const [user, setUser] = useState({});
@@ -71,48 +73,108 @@ export const ProfilePage = () => {
   }
 
   return (
-    <View>
-      <Text>Name: {user.username}</Text>
-      <Text>Email: {user.email}</Text>
-      <View style={styles.borderImg}>
+    <ImageBackground
+      source={require("../assets/backgroundlogin.png")}
+      resizeMode="cover"
+      style={styles.Background}
+      blurRadius={5}
+    >
+      <View style={styles.profileContainer}>
+        <View style={styles.borderImg}>
+          <Image
+            style={styles.avatar}
+            source={{ uri: img.uri || user.avatar_url }}
+          />
+        </View>
+        <View style={styles.buttonContainer}>
+          {img.uri ? (
+            <Chip
+              closeIcon={() => (
+                <MaterialCommunityIcons name="close" size={20} color="#fff" />
+              )}
+              onClose={() => setImg({})}
+              style={styles.chip}
+              textStyle={{ color: "#fff", fontSize: 16 }}
+              onPress={editAvatar}
+            >
+              <Icon name="save" />
+            </Chip>
+          ) : (
+            <TouchableOpacity style={styles.customButton} onPress={pickImage}>
+              <Icon name="edit" />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.userDetails}>
+          <View style={{ marginLeft: 55 }}>
+            <Text style={{ textAlign: "center" }}>{user.username}</Text>
+            <Text style={{ textAlign: "center" }}>{user.email}</Text>
+          </View>
+          <TouchableOpacity style={styles.customButton}>
+            <Icon name="edit" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.friendContainer}>
         <Image
-          style={styles.avatar}
-          source={{ uri: img.uri || user.avatar_url }}
+          source={{
+            uri: "https://media.comicbook.com/2021/04/attack-on-titan-ending-levi-ackerman-1263774.jpeg?auto=webp&width=1200&height=675&crop=1200:675,smart",
+          }}
+          style={styles.friendImage}
+        />
+        <Image
+          source={{
+            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu1MMT8BUmERLt1GEZwFvYVtTD7YOfEYsYxA&usqp=CAU",
+          }}
+          style={styles.friendImage}
+        />
+        <Image
+          source={{
+            uri: "https://www.personality-database.com/profile_images/12344.png",
+          }}
+          style={styles.friendImage}
+        />
+        <Image
+          source={{
+            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfXmGRshbNAaElslvI4CLpQwG_LbFJw3YBaw&usqp=CAU",
+          }}
+          style={styles.friendImage}
+        />
+        <Image
+          source={{
+            uri: "https://mfiles.alphacoders.com/749/749909.jpg",
+          }}
+          style={styles.friendImage}
         />
       </View>
-      {img.uri ? (
-        <Chip
-          closeIcon={() => (
-            <MaterialCommunityIcons name="close" size={26} color="#fff" />
-          )}
-          onClose={() => setImg({})}
-          style={styles.chip}
-          textStyle={{ color: "#fff", fontSize: 16 }}
-          onPress={editAvatar}
-        >
-          Save change
-        </Chip>
-      ) : (
-        <Button
-          onPress={pickImage}
-          icon="image-edit-outline"
-          mode="contained"
-          dark={true}
-          color="#7C9A92"
-          style={{ width: "35%" }}
-        >
-          Edit Picture
-        </Button>
-      )}
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  friendContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  friendImage: {
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    margin: 5,
+    borderWidth: 1.5,
+    borderColor: "black",
+  },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
+  },
+  Background: {
+    height: "100%",
+    width: "100%",
   },
   borderImg: {
     borderWidth: 8,
@@ -132,8 +194,34 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 2,
     backgroundColor: "#7C9A92",
-    width: "40%",
-    height: 50,
+    width: 70,
+    height: 35,
     borderRadius: 5,
+  },
+  profileContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.77)",
+  },
+  buttonContainer: {
+    margin: 10,
+  },
+  customButton: {
+    display: "flex",
+    justifyContent: "center",
+    width: 35,
+    height: 35,
+    backgroundColor: "#7C9A92",
+    borderRadius: 5,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  userDetails: {
+    display: "flex",
+    flexDirection: "row",
   },
 });
