@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { PositionContext } from "../context/positionContext";
 import { ImageContext } from "../context/imageContext";
-import { TopicContext } from "../context/topicContext";
 import { UserContext } from "../context/userContext";
 import * as ImagePicker from "expo-image-picker";
 import {
@@ -21,11 +20,12 @@ import {
   Modal,
   Portal,
   Provider,
-  Searchbar,
 } from "react-native-paper";
 import { MaterialCommunityIcons, Entypo } from "@expo/vector-icons";
 import { createPost } from "../Server/PostsData";
 import { uploadImage } from "../Server/ImageStorage";
+import { ChooseTopic } from "../component/ChooseTopics";
+import { LoadingPage } from "./LoadingPage";
 
 const { width, height } = Dimensions.get("window");
 
@@ -34,11 +34,10 @@ export const PostPage = ({ navigation }) => {
     useContext(PositionContext);
   const { userData } = useContext(UserContext);
   const { img, setImg } = useContext(ImageContext);
-  const { topics, setTopics } = useContext(TopicContext);
   const [description, setDescription] = useState("");
   const [visible, setVisible] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
@@ -53,7 +52,7 @@ export const PostPage = ({ navigation }) => {
       Alert.alert("Error", "Please fill all required fields");
       return;
     } else {
-      console.log(postLocation);
+      setIsLoading(true);
       createPost({
         description,
         createdDate: Date.now(),
@@ -65,31 +64,20 @@ export const PostPage = ({ navigation }) => {
         Longitude2: postLocation.longitude,
         likes: [],
         comments: [],
-        username: userData.username,
+        author: userData.username,
         image: await uploadImage({
           image: img.uri,
           path: `posts/${Math.random().toString(36)}`,
         }),
+      }).then(() => {
+        setIsLoading(false);
       });
     }
-
-    // console.log(
-    //   "\nimg: ",
-    //   img,
-    //   "\npostLocation ",
-    //   postLocation,
-    //   "\npostLocationName ",
-    //   postLocationName,
-    //   "\ndescription ",
-    //   description,
-    //   "\nselectedTopics ",
-    //   selectedTopics
-    // );
   };
 
-  const getTopics = (query) => {
-    console.log(query);
-  };
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -245,55 +233,10 @@ export const PostPage = ({ navigation }) => {
             onDismiss={hideModal}
             contentContainerStyle={styles.topicsWrap}
           >
-            <ScrollView contentContainerStyle={styles.topics}>
-              <Searchbar
-                placeholder="Search"
-                onChangeText={(query) => {
-                  setSearchQuery(query);
-                  getTopics(query);
-                }}
-                value={searchQuery}
-                onIconPress={() => {
-                  getTopics(searchQuery);
-                }}
-              />
-              {topics.map((topic) => {
-                return (
-                  <Pressable
-                    key={topic}
-                    onPress={() => {
-                      setSelectedTopics((currSelectedTopics) => {
-                        const foundTopic = currSelectedTopics.filter(
-                          (currTopics) => topic !== currTopics
-                        );
-                        return currSelectedTopics.length === foundTopic.length
-                          ? [...currSelectedTopics, topic]
-                          : foundTopic;
-                      });
-                    }}
-                  >
-                    <View style={styles.center}>
-                      <View
-                        style={[
-                          styles.borderImg,
-                          {
-                            borderColor: selectedTopics.includes(topic)
-                              ? "#7C9A92"
-                              : "#eee",
-                          },
-                        ]}
-                      >
-                        <Image
-                          style={styles.avatar}
-                          source={require("../assets/backgroundlogin.png")}
-                        />
-                      </View>
-                      <Text style={styles.hash}>{topic}</Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <ChooseTopic
+              setSelectedTopics={setSelectedTopics}
+              selectedTopics={selectedTopics}
+            />
           </Modal>
         </Portal>
       </ScrollView>

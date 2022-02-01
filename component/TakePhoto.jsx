@@ -113,6 +113,7 @@ export const TakePhoto = ({ navigation }) => {
                 setLoading(true);
                 const photo = await camera.takePictureAsync({
                   skipProcessing: true,
+                  quality: 0.2,
                 });
                 setLoading(false);
                 setImg({
