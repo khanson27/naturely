@@ -65,4 +65,34 @@ const getPosts = (page, topics) => {
   }
 };
 
-export { createPost, getPosts };
+const getUserPosts = (username) => {
+  const postArr = [];
+  return getDocs(
+    query(
+      collection(firestore, "posts"),
+      where("username", "==", username),
+      orderBy("createdDate", "desc")
+    )
+  )
+    .then((arr) => {
+      arr.forEach((doc) => {
+        const docData = doc.data();
+        postArr.push({ ...docData, id: doc.id });
+      });
+
+      return postArr;
+    })
+    .catch((err) => console.log(err.message));
+};
+
+const getSinglePost = (postId) => {
+  return getDoc(doc(firestore, "posts", postId))
+    .then((post) => {
+      return post.data();
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+
+export { createPost, getPosts, getUserPosts, getSinglePost };

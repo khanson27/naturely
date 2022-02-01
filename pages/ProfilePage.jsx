@@ -13,6 +13,7 @@ import {
   Pressable,
   TouchableOpacity,
   ImageBackground,
+  FlatList,
 } from "react-native";
 import {
   TextInput,
@@ -28,16 +29,28 @@ import { getUser } from "../Server/Auth-user";
 import { uploadImage } from "../Server/ImageStorage";
 import { editProfilePicture } from "../Server/Auth-user";
 import { LoadingPage } from "./LoadingPage";
+import { getUserPosts } from "../Server/PostsData";
+import CssPostCard from "../component/CssPostCard";
+
 export const ProfilePage = () => {
   const { userData } = useContext(UserContext);
   const [user, setUser] = useState({});
   const [img, setImg] = useState({});
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(async () => {
     setUser(await getUser(userData.username));
     setLoading(false);
   }, [img]);
+
+  useEffect(() => {
+    setLoading(true);
+    getUserPosts(userData.username).then((posts) => {
+      setPosts(posts);
+      setLoading(false);
+    });
+  }, []);
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -113,6 +126,9 @@ export const ProfilePage = () => {
           <TouchableOpacity style={styles.customButton}>
             <Icon name="edit" />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.customButton}>
+            <Icon name="delete" />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -147,6 +163,17 @@ export const ProfilePage = () => {
           }}
           style={styles.friendImage}
         />
+      </View>
+      <View>
+        {loading ? (
+          <Text>User Posts Loading...</Text>
+        ) : (
+          <FlatList
+            data={posts}
+            renderItem={({ item }) => <CssPostCard posts={item} />}
+            keyExtractor={(item) => item.id}
+          />
+        )}
       </View>
     </ImageBackground>
   );
