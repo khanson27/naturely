@@ -19,7 +19,7 @@ const { width, height } = Dimensions.get("window");
 
 export const BrowsePage = () => {
   const [users, setUsers] = useState([]);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState();
   const [topicsArray, setTopicsArray] = useState([]);
   const [selection, setSelection] = useState("topics");
   const [isLoading, setIsLoading] = useState(true);
@@ -62,8 +62,8 @@ export const BrowsePage = () => {
               style={styles.searchBar}
               onChangeText={setQuery}
               text={query}
-              placeholder="Search..."
-              opacity={0.62}
+              placeholder="   Search..."
+              opacity={0.5}
               width={0.8}
             />
             <TouchableOpacity style={styles.button} onPress={handleSearch}>
