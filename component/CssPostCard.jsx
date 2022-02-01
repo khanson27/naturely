@@ -4,29 +4,17 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
-<<<<<<< HEAD
-} from 'react-native';
-import React, { useState } from 'react';
-import { Chip } from 'react-native-paper';
-import { timeSince } from '../utils/pastTime';
-=======
 } from "react-native";
 import React, { useState, useContext } from "react";
 import { Chip } from "react-native-paper";
 import { timeSince } from "../utils/pastTime";
->>>>>>> main
 
 const CssPostCard = ({ posts, navigation }) => {
   const [addComment, setAddComment] = useState(true);
   return (
     <TouchableWithoutFeedback
       onLongPress={() => {
-<<<<<<< HEAD
-        console.log('post pressed');
-        navigation.push('SinglePost', {
-=======
         navigation.push("SinglePost", {
->>>>>>> main
           postId: posts.id,
         });
       }}
@@ -41,7 +29,7 @@ const CssPostCard = ({ posts, navigation }) => {
           <View style={styles.locationTextContainer}>
             <Image
               style={styles.locationIcon}
-              source={require('../assets/location-pin.png')}
+              source={require("../assets/location-pin.png")}
             />
             <Text
               ellipsizeMode="tail"
@@ -60,7 +48,7 @@ const CssPostCard = ({ posts, navigation }) => {
             {posts.description}
           </Text>
           <Text style={styles.tagsText} ellipsizeMode="tail" numberOfLines={4}>
-            {`#${posts.topics.join(' #')}`}
+            {`#${posts.topics.join(" #")}`}
           </Text>
           <Text style={styles.timeText}>{`posted ${timeSince(
             posts.createdDate
@@ -70,14 +58,14 @@ const CssPostCard = ({ posts, navigation }) => {
               <Chip
                 style={styles.chip}
                 icon="thumb-up-outline"
-                textStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
+                textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
               >
                 {posts.likes.length}
               </Chip>
               <Chip
                 style={styles.chip}
                 icon="comment-outline"
-                textStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
+                textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
               >
                 {posts.comments}
               </Chip>
@@ -94,17 +82,17 @@ export default CssPostCard;
 const styles = StyleSheet.create({
   container: {
     height: 250,
-    backgroundColor: '#FCFFEF',
+    backgroundColor: "#FCFFEF",
     marginVertical: 5,
     marginHorizontal: 10,
     paddingVertical: 20,
     paddingHorizontal: 20,
     borderRadius: 20,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   image: {
     flex: 1,
-    backgroundColor: '#FCFFEF',
+    backgroundColor: "#FCFFEF",
     borderRadius: 5,
   },
   imageContainer: {
@@ -117,11 +105,11 @@ const styles = StyleSheet.create({
     width: 10,
   },
   locationTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   locationText: {
-    color: '#7C9A92',
+    color: "#7C9A92",
     fontSize: 13,
     marginRight: 5,
   },
@@ -132,35 +120,35 @@ const styles = StyleSheet.create({
   usernameText: {
     marginLeft: 5,
     marginTop: 3,
-    color: '#253334',
+    color: "#253334",
     fontSize: 25,
   },
   descriptionText: {
     marginLeft: 5,
     marginVertical: 5,
-    color: '#253334',
+    color: "#253334",
     fontSize: 15,
   },
   tagsText: {
     marginLeft: 5,
-    color: '#7C9A92',
+    color: "#7C9A92",
     fontSize: 13,
   },
   timeText: {
     marginLeft: 5,
-    color: '#253334',
+    color: "#253334",
     fontSize: 11,
   },
   chipContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   chipItem: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   chip: {
     marginLeft: 10,
-    backgroundColor: '#7C9A92',
+    backgroundColor: "#7C9A92",
   },
 });

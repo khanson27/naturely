@@ -7,7 +7,7 @@ import {
   Dimensions,
 } from "react-native";
 import React from "react";
-import { Octicons, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { signOutUser } from "../Server/Auth-user";
 
 export function Header({ title, navigation }) {
@@ -32,16 +32,16 @@ export function Header({ title, navigation }) {
         <Text style={styles.headerText}>{title}</Text>
       </View>
       <View style={styles.icons}>
-        <FontAwesome
-          name="sign-out"
-          size={45}
+        <AntDesign
+          name="logout"
+          size={30}
           color="white"
           onPress={signOutUser}
           style={{ paddingRight: 15 }}
         />
-        <Octicons
-          name="diff-added"
-          size={45}
+        <Ionicons
+          name="md-add-circle"
+          size={40}
           color="white"
           onPress={openMenu}
         />
