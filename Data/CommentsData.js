@@ -1,4 +1,4 @@
-import { firestore } from "./firebase.js";
+import { firestore } from "../Server/firebase.js";
 import {
   doc,
   getDocs,
