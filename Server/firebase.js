@@ -234,10 +234,10 @@ const searchFromBrowse = (selection, queryTerm) => {
         return searchArray;
       })
       .catch((err) => alert(err.message));
-  } else {
+  } else if (selection === "topics") {
     return getDocs(
-      query(collection(firestore, "posts"), where("topics", "==", queryTerm))
-    )
+      query(collection(firestore, "posts"), where("topics(0)", "==", queryTerm))
+    ) //Should it be posts/topics ? To access nested topics array.
       .then((posts) => {
         posts.forEach((post) => {
           const postData = post.data;

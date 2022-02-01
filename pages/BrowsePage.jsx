@@ -76,7 +76,7 @@ export const BrowsePage = () => {
             <FlatList
               data={users}
               renderItem={({ item }) => <TopUsersCard users={item} />}
-              keyExtractor={(item) => item.userId}
+              keyExtractor={(item) => item.auth_id}
               style={{ paddingTop: 10 }}
             />
           )}
