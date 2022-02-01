@@ -1,11 +1,13 @@
-import { getUsers } from "./Auth-user.js";
-import { life, seaLife, commentsData } from "./LifeData.js";
+import { getUsers } from "../Server/Auth-user.js";
+import { life, seaLife, commentsData } from "../Data/LifeData.js";
 import { createClient } from "pexels";
 import * as fs from "fs";
 import axios from "axios";
 const client = createClient(
   "563492ad6f917000010000015cda9074900545ac9d5cdf2d4d9bd824"
 );
+import { createPost } from "../Server/PostsData";
+import { createTopic } from "../Server/TopicsData";
 
 const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -65,8 +67,6 @@ const seed = (data, count) => {
   });
 };
 
-//seed(life, 0);
-
 let land = "b";
 
 const seedLoc = async (posts, count) => {
@@ -95,8 +95,6 @@ const seedLocation = () => {
   seedLoc(posts, 0);
 };
 
-//seedLocation();
-
 const seedLike = async (posts, count, users) => {
   if (count === posts.length) return "done";
   //if (posts.length - count < 57) {
@@ -123,6 +121,7 @@ const allComments = [];
 const insertCommentsToDataBase = async () => {
   allComments.forEach((comment) => {
     //insert comment to firebase
+    //await createComment(comment);
   });
 };
 
@@ -158,6 +157,36 @@ const seedComments = (users) => {
   //get all posts from the database
   seedCommentsForPost(posts, 0, users);
 };
+
+const addPostFirebase = async (posts, count) => {
+  if (count === posts.length) return;
+  await createPost(posts[count]);
+  addPostFirebase(posts, count + 1);
+};
+
+const seedPostFirebase = () => {
+  const posts = JSON.parse(fs.readFileSync("./Data/Posts.json", "utf8"));
+  addPostFirebase(posts, 0);
+};
+
+const addTopicFirebase = async (topics, count) => {
+  if (count === topics.length) return;
+  await createTopic(topics[count]);
+  addTopicFirebase(topics, count + 1);
+};
+
+const seedTopicFirebase = () => {
+  const topics = JSON.parse(fs.readFileSync("./Data/Topics.json", "utf8"));
+  addTopicFirebase(topics, 0);
+};
+
+//seed(life, 0);
+
+//seedLocation();
+
+//seedPostFirebase();
+
+//seedTopicFirebase();
 
 getUsers().then((users) => {
   console.log(users);

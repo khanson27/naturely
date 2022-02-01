@@ -4,17 +4,31 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
+<<<<<<< HEAD
 } from 'react-native';
 import React, { useState } from 'react';
 import { Chip } from 'react-native-paper';
+=======
+} from "react-native";
+import React, { useState } from "react";
+import { Chip } from "react-native-paper";
+import { timeSince } from "../utils/pastTime";
+>>>>>>> main
 
-const CssPostCard = ({ posts }) => {
+const CssPostCard = ({ posts, navigation }) => {
   const [addComment, setAddComment] = useState(true);
 
   return (
     <TouchableWithoutFeedback
       onLongPress={() => {
+<<<<<<< HEAD
         console.log('post pressed');
+=======
+        console.log("post pressed");
+        navigation.push("SinglePost", {
+          postId: posts.id,
+        });
+>>>>>>> main
       }}
       activeOpacity={0.5}
     >
@@ -37,7 +51,7 @@ const CssPostCard = ({ posts }) => {
               {posts.locationName}
             </Text>
           </View>
-          <Text style={styles.usernameText}>{posts.username}</Text>
+          <Text style={styles.usernameText}>{posts.author}</Text>
           <Text
             ellipsizeMode="tail"
             numberOfLines={2}
@@ -46,9 +60,11 @@ const CssPostCard = ({ posts }) => {
             {posts.description}
           </Text>
           <Text style={styles.tagsText} ellipsizeMode="tail" numberOfLines={4}>
-            {posts.tags}
+            {`#${posts.topics.join(" #")}`}
           </Text>
-          <Text style={styles.timeText}>posted -x- days ago...</Text>
+          <Text style={styles.timeText}>{`posted ${timeSince(
+            posts.createdDate
+          )} days ago...`}</Text>
           <View style={styles.chipContainer}>
             <View style={styles.chipItem}>
               <Chip
@@ -56,14 +72,14 @@ const CssPostCard = ({ posts }) => {
                 icon="thumb-up-outline"
                 textStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
               >
-                9
+                {posts.likes.length}
               </Chip>
               <Chip
                 style={styles.chip}
                 icon="comment-outline"
                 textStyle={{ color: '#FFFFFF', fontWeight: 'bold' }}
               >
-                9
+                {posts.comments}
               </Chip>
             </View>
           </View>
@@ -115,12 +131,22 @@ const styles = StyleSheet.create({
   },
   usernameText: {
     marginLeft: 5,
+<<<<<<< HEAD
     color: '#253334',
+=======
+    marginTop: 3,
+    color: "#253334",
+>>>>>>> main
     fontSize: 25,
   },
   descriptionText: {
     marginLeft: 5,
+<<<<<<< HEAD
     color: '#253334',
+=======
+    marginVertical: 5,
+    color: "#253334",
+>>>>>>> main
     fontSize: 15,
   },
   tagsText: {
