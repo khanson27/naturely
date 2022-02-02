@@ -6,22 +6,53 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  FlatList,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getSinglePost } from "../Server/PostsData";
+import { UserContext } from "../context/userContext";
+import { createComment, getComments } from "../Server/PostsData";
+import { InputText } from "./InputText";
+import CommentsCard from "./CommentsCard";
 
 export const SinglePost = ({ navigation, route }) => {
   const [singlePost, setSinglePost] = useState({});
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { userData } = useContext(UserContext);
   const { postId } = route.params;
   useEffect(() => {
     setIsLoading(true);
-    getSinglePost(postId).then((post) => {
-      setSinglePost(post);
-      setIsLoading(false);
-    });
-  }, [postId]);
+    getSinglePost(postId)
+      .then((post) => {
+        setSinglePost(post);
+      })
+      .then(() => {
+        return getComments(postId);
+      })
+      .then((comments) => {
+        setComments(comments);
+        setIsLoading(false);
+      });
+  }, []);
 
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   , []);
+  // });
+  const handlePress = () => {
+    createComment(
+      postId,
+      {
+        comment: comment,
+        author: userData.username,
+        createdDate: Date.now(),
+        postId: postId,
+      },
+      userData.username
+    );
+  };
   return (
     <ImageBackground
       source={require("../assets/backgroundlogin.png")}
@@ -49,6 +80,22 @@ export const SinglePost = ({ navigation, route }) => {
             <Text>{singlePost.likes}</Text>
           </View>
         )}
+      </View>
+      <View>
+        <InputText onChangeText={setComment} value={comment} multiline={true} />
+        <Button onPress={handlePress} title="submit">
+          Submit
+        </Button>
+      </View>
+      <View>
+        {/* <FlatList
+          data={comments}
+          renderItem={({ item }) => <CommentsCard comments={item} />}
+          keyExtractor={(item) => item.id}
+        /> */}
+        {comments.map((comment) => {
+          return <CommentsCard comments={comment} />;
+        })}
       </View>
     </ImageBackground>
   );

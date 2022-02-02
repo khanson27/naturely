@@ -1,18 +1,23 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { Chip } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const TopUsersCard = ({ users }) => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <View style={styles.userBox}>
-        <Image source={{ uri: users.avatar_url }} style={styles.image} />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push('OtherUsersPage', {
+              username: users.username,
+            });
+          }}
+          activeOpacity={0.5}
+        >
+          <Image source={{ uri: users.avatar_url }} style={styles.image} />
+        </TouchableOpacity>
         <Text style={styles.usernameText}>{users.username}</Text>
       </View>
     </View>

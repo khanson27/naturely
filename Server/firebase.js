@@ -1,13 +1,13 @@
 // Import the functions you need from the SDKs you need.
 
-import { initializeApp } from "firebase/app";
+import { initializeApp } from 'firebase/app';
 import {
   createUserWithEmailAndPassword,
   getAuth,
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
-} from "firebase/auth";
+} from 'firebase/auth';
 import {
   getFirestore,
   getStorage,
@@ -22,7 +22,7 @@ import {
   where,
   arrayUnion,
   getDoc,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -31,15 +31,15 @@ import {
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E",
-  authDomain: "naturely-3428a.firebaseapp.com",
+  apiKey: 'AIzaSyBR6WfETWzoCP_9vg_2rhe2L51tbu1fz2E',
+  authDomain: 'naturely-3428a.firebaseapp.com',
   databaseURL:
-    "https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "naturely-3428a",
-  storageBucket: "naturely-3428a.appspot.com",
-  messagingSenderId: "171617270088",
-  appId: "1:171617270088:web:9c3ca9ce62ca771d69db7d",
-  measurementId: "G-ZYZ8CXCJYZ",
+    'https://naturely-3428a-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'naturely-3428a',
+  storageBucket: 'naturely-3428a.appspot.com',
+  messagingSenderId: '171617270088',
+  appId: '1:171617270088:web:9c3ca9ce62ca771d69db7d',
+  measurementId: 'G-ZYZ8CXCJYZ',
 };
 
 // Initialize Firebase
@@ -52,29 +52,29 @@ const createUser = (email, password, username) => {
   const docObj = {
     email,
     avatar_url:
-      "https://firebasestorage.googleapis.com/v0/b/naturely-3428a.appspot.com/o/defaultuser.png?alt=media&token=c380dc03-d0b1-4d03-8c63-2854828ad027",
+      'https://firebasestorage.googleapis.com/v0/b/naturely-3428a.appspot.com/o/defaultuser.png?alt=media&token=c380dc03-d0b1-4d03-8c63-2854828ad027',
     creationDate: Date.now(),
     posts: [],
     comments: [],
   };
 
-  getDocs(collection(firestore, "users"))
+  getDocs(collection(firestore, 'users'))
     .then((userArr) => {
       userArr.forEach((user) => {
         if (user.id === username) {
-          throw { message: "username already exists" };
+          throw { message: 'username already exists' };
         }
       });
     })
     .then(() => {
-      return setDoc(doc(firestore, "users", username), docObj);
+      return setDoc(doc(firestore, 'users', username), docObj);
     })
     .then(() => {
       return createUserWithEmailAndPassword(auth, email, password);
     })
     .then(({ user }) => {
       setDoc(
-        doc(firestore, "users", username),
+        doc(firestore, 'users', username),
         {
           auth_id: user.uid,
         },
@@ -91,10 +91,10 @@ const createUser = (email, password, username) => {
 const loginUser = (email, password) => {
   return signInWithEmailAndPassword(auth, email, password).then(() => {
     return getDocs(
-      query(collection(firestore, "users"), where("email", "==", email))
+      query(collection(firestore, 'users'), where('email', '==', email))
     )
       .then((docs) => {
-        let username = "";
+        let username = '';
         docs.forEach((doc) => {
           username = doc.id;
         });
@@ -107,13 +107,13 @@ const loginUser = (email, password) => {
 const signOutUser = () => {
   return signOut(auth)
     .then(() => {
-      console.log("Sign out successful");
+      console.log('Sign out successful');
     })
     .catch((err) => alert(err.message));
 };
 
 const editProfilePicture = (url, username) => {
-  updateDoc(doc(firestore, "users", username), {
+  updateDoc(doc(firestore, 'users', username), {
     avatar_url: url,
   }).catch((err) => alert(err.message));
 };
@@ -164,7 +164,7 @@ const createPost = (
   location,
   locationName
 ) => {
-  addDoc(collection(firestore, "posts"), {
+  addDoc(collection(firestore, 'posts'), {
     description,
     username,
     tags,
@@ -176,7 +176,7 @@ const createPost = (
       return post;
     })
     .then((post) => {
-      updateDoc(doc(firestore, "users", username), {
+      updateDoc(doc(firestore, 'users', username), {
         posts: arrayUnion(post.id),
       }).catch((err) => alert(err.message));
     });
@@ -184,7 +184,7 @@ const createPost = (
 
 const getPosts = () => {
   let postArray = [];
-  return getDocs(collection(firestore, "posts"))
+  return getDocs(collection(firestore, 'posts'))
     .then((arr) => {
       arr.forEach((doc) => {
         const docData = doc.data();
@@ -197,7 +197,7 @@ const getPosts = () => {
 };
 
 const getUser = (username) => {
-  return getDoc(doc(firestore, "users", username))
+  return getDoc(doc(firestore, 'users', username))
     .then((user) => {
       return user.data();
     })
@@ -206,7 +206,7 @@ const getUser = (username) => {
 
 const getUsers = () => {
   let usersArray = [];
-  return getDocs(collection(firestore, "users"))
+  return getDocs(collection(firestore, 'users'))
     .then((arr) => {
       arr.forEach((user) => {
         const userData = user.data();
@@ -221,9 +221,9 @@ const getUsers = () => {
 
 const searchFromBrowse = (selection, queryTerm) => {
   const searchArray = [];
-  if (selection === "users") {
+  if (selection === 'users') {
     return getDocs(
-      query(collection(firestore, "users"), where("username", "==", queryTerm))
+      query(collection(firestore, 'users'), where('username', '==', queryTerm))
     )
       .then((users) => {
         users.forEach((user) => {
@@ -234,11 +234,11 @@ const searchFromBrowse = (selection, queryTerm) => {
         return searchArray;
       })
       .catch((err) => alert(err.message));
-  } else if (selection === "topics") {
+  } else if (selection === 'topics') {
     return getDocs(
       query(
-        collection(firestore, "posts"),
-        where("topics", "array-contains-any", [queryTerm])
+        collection(firestore, 'posts'),
+        where('topics', 'array-contains-any', [queryTerm])
       )
     ) //Should it be posts/topics ? To access nested topics array.
       .then((posts) => {
