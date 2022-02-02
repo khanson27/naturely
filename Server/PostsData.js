@@ -94,5 +94,46 @@ const getSinglePost = (postId) => {
       console.log(err.message);
     });
 };
+const createComment = (postId, commentContent, username) => {
+  return addDoc(collection(firestore, "comments"), commentContent)
+    .then((comment) => {
+      updateDoc(doc(firestore, "posts", postId), {
+        comments: arrayUnion(comment.id),
+      });
+      updateDoc(doc(firestore, "users", username), {
+        comments: arrayUnion(comment.id),
+      });
+      return comment;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
 
-export { createPost, getPosts, getUserPosts, getSinglePost };
+const getComments = (postId) => {
+  const commentArr = [];
+  return getDocs(
+    query(
+      collection(firestore, "comments"),
+      where("postId", "==", postId),
+      orderBy("createdDate")
+    )
+  )
+    .then((comments) => {
+      comments.forEach((comment) => {
+        commentArr.push(comment.data());
+      });
+      return commentArr;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+};
+export {
+  createPost,
+  getPosts,
+  getUserPosts,
+  getSinglePost,
+  createComment,
+  getComments,
+};

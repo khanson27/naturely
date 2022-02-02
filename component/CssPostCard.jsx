@@ -67,7 +67,7 @@ const CssPostCard = ({ posts, navigation }) => {
                 icon="comment-outline"
                 textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
               >
-                {posts.comments}
+                {posts.comments.length}
               </Chip>
             </View>
           </View>
