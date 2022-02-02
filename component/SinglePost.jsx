@@ -7,12 +7,18 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { getSinglePost } from "../Server/PostsData";
+import { UserContext } from "../context/userContext";
+import { createComment, getComments } from "../Server/PostsData";
+import { InputText } from "./InputText";
 
 export const SinglePost = ({ navigation, route }) => {
   const [singlePost, setSinglePost] = useState({});
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { userData } = useContext(UserContext);
   const { postId } = route.params;
   useEffect(() => {
     setIsLoading(true);
@@ -21,7 +27,18 @@ export const SinglePost = ({ navigation, route }) => {
       setIsLoading(false);
     });
   }, [postId]);
-
+  const handlePress = () => {
+    createComment(
+      postId,
+      {
+        comment: comment,
+        author: userData.username,
+        createdDate: Date.now(),
+        postId: postId,
+      },
+      userData.username
+    );
+  };
   return (
     <ImageBackground
       source={require("../assets/backgroundlogin.png")}
@@ -49,6 +66,12 @@ export const SinglePost = ({ navigation, route }) => {
             <Text>{singlePost.likes}</Text>
           </View>
         )}
+      </View>
+      <View>
+        <InputText onChangeText={setComment} value={comment} multiline={true} />
+        <Button onPress={handlePress} title="submit">
+          Submit
+        </Button>
       </View>
     </ImageBackground>
   );
