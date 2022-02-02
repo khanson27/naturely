@@ -46,7 +46,6 @@ export const OtherUsersPage = ({ route }) => {
 
   useEffect(() => {
     getUserPosts(username).then((posts) => {
-      console.log(posts);
       setPosts(posts);
     });
   }, [user]);
@@ -165,6 +164,8 @@ const styles = StyleSheet.create({
     margin: 20,
     borderRadius: 10,
     backgroundColor: 'rgba(255,255,255,0.77)',
+    width: 200,
+    alignSelf: 'center',
   },
   buttonContainer: {
     margin: 10,
