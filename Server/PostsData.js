@@ -72,7 +72,7 @@ const getUserPosts = (username) => {
   return getDocs(
     query(
       collection(firestore, "posts"),
-      where("username", "==", username),
+      where("author", "==", username),
       orderBy("createdDate", "desc")
     )
   )
