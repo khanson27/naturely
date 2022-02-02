@@ -17,52 +17,54 @@ import {
 } from "firebase/firestore";
 
 const createPost = (postInfo) => {
-  addDoc(collection(firestore, "posts"), postInfo)
-    .then((post) => {
-      return post;
+  return addDoc(collection(firestore, "posts"), postInfo)
+    .then(() => {
+      return null;
     })
     .catch((err) => alert(err.message));
 };
 
-const getPosts = (page, topics) => {
-  const topicsArr = topics || [];
+const getPosts = ({ Page, Topics, Location, order }) => {
+  const topicsArr = Topics || [];
   const postArray = [];
-  if (topicsArr.length) {
-    return getDocs(
-      query(
+  console.log(Location);
+  const filterSort = () => {
+    if (topicsArr.length) {
+      return query(
         collection(firestore, "posts"),
         where("topics", "array-contains-any", topics),
         orderBy("createdDate", "desc"),
-        startAfter(page),
+        startAfter(Page),
         limit(10)
-      )
-    )
-      .then((arr) => {
-        arr.forEach((doc) => {
-          const docData = doc.data();
-          postArray.push({ ...docData, id: doc.id });
-        });
-        return postArray;
-      })
-      .catch((err) => console.log(err.message));
-  } else {
-    return getDocs(
-      query(
+      );
+    } else if (Location) {
+      return query(
         collection(firestore, "posts"),
+        where("locationName", "array-contains", Location),
         orderBy("createdDate", "desc"),
-        startAfter(page),
+        startAfter(Page),
         limit(10)
-      )
-    )
-      .then((arr) => {
-        arr.forEach((doc) => {
-          const docData = doc.data();
-          postArray.push({ ...docData, id: doc.id });
-        });
-        return postArray;
-      })
-      .catch((err) => alert(err.message));
-  }
+      );
+    } else {
+      return query(
+        query(
+          collection(firestore, "posts"),
+          orderBy("createdDate", "desc"),
+          startAfter(Page),
+          limit(10)
+        )
+      );
+    }
+  };
+  return getDocs(filterSort())
+    .then((arr) => {
+      arr.forEach((doc) => {
+        const docData = doc.data();
+        postArray.push({ ...docData, id: doc.id });
+      });
+      return postArray;
+    })
+    .catch((err) => console.log(err.message));
 };
 
 const getUserPosts = (username) => {

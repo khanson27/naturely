@@ -1,85 +1,175 @@
 import MapView, { Marker, Callout } from "react-native-maps";
 import React, { useEffect, useState, useContext } from "react";
+import { PositionContext } from "../context/positionContext";
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  Button,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
+  FlatList,
   Image,
 } from "react-native";
-import Slider from "@react-native-community/slider";
 import * as Location from "expo-location";
-import { ImageContext } from "../context/imageContext";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { LoadingPage } from "./LoadingPage";
+import { getPosts } from "../Server/PostsData";
+import CssPostCard from "../component/CssPostCard";
+import { Button, Modal, Portal, Provider } from "react-native-paper";
 
-const LOCATIONS = [
-  [0.02, -0.01],
-  [-0.1, 0.09],
-  [0.05, 0.03],
-  [0.008, 0.09],
-  [-0.003, -0.2],
-];
-export const MapPage = () => {
-  const { img } = useContext(ImageContext);
+export const MapPage = ({ navigation }) => {
+  const { postLocation, setPostLocation, setPostLocationName } =
+    useContext(PositionContext);
   const [userLocation, setUserLocation] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [map, setMap] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1000000000000000000000);
+  const [loadingPost, setLoadingPosts] = useState(false);
+  const [limits, setLimits] = useState({
+    northEast: {
+      latitude: 53.49682620500161,
+      longitude: -2.1924976631999016,
+    },
+    southWest: {
+      latitude: 53.40462612471012,
+      longitude: -2.292027398943901,
+    },
+  });
 
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
       return;
     }
-    let location = await Location.getCurrentPositionAsync({});
-    setUserLocation(location);
+    const location = await Location.getCurrentPositionAsync({});
+    const currLocation = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    };
+    setPostLocation(currLocation);
+    setUserLocation(currLocation);
+  };
+
+  const getLocationsName = async () => {
+    const locName = await Location.reverseGeocodeAsync(locationSearch);
+    if (locName.length) {
+      const {
+        city,
+        district,
+        subregion,
+        region,
+        country,
+        isoCountryCode,
+        name,
+        postalCode,
+      } = locName[0];
+      setPostLocationName([
+        city,
+        district,
+        subregion,
+        region,
+        country,
+        isoCountryCode,
+        name,
+        postalCode,
+      ]);
+      // setPostLocationName(city || district || subregion || region || country);
+    } else {
+      Alert.alert("Locations within oceans are not supported");
+    }
+  };
+
+  const pythagoras = (x1, x2, y1, y2) => {
+    return Math.abs(Math.sqrt((x1 - y1) ** 2 + (x2 - y2) ** 2));
   };
 
   useEffect(() => {
+    setIsLoading(true);
     getLocation();
+    getPosts({ Page: page }).then((data) => {
+      setPosts(data);
+      setIsLoading(false);
+    });
   }, []);
 
-  const [markers, setMarkers] = useState([
-    {
-      title: "my house!",
-      coordinate: { lat: 53.26862, long: -2.45847 },
-      description: "pretty self explanitory init?",
-    },
-    {
-      title: "northcoders!",
-      coordinate: { lat: 53.467258, long: -2.23467 },
-      description: "the land of happy coders!",
-    },
-  ]);
-  const [region, setRegion] = React.useState({
-    latitude: 53.467258,
-    longitude: -2.2,
-    latitudeDelta: 0.0922 * 10,
-    longitudeDelta: 0.0421 * 10,
-  });
-  const [slideValue, setSlideValue] = useState(0);
-  const [showLocation, setShowLocation] = useState([0, 0, 0]);
-  const [map, setMap] = useState(null);
+  const loadPosts = (newPage) => {
+    setLoadingPosts(true);
+    getPosts({ Page: newPage }).then((data) => {
+      setPosts((curr) => {
+        return [...curr, ...data];
+      });
+      setLoadingPosts(false);
+    });
+  };
 
-  function log(eventName, e) {
-    console.log(eventName, e.nativeEvent);
+  if (isLoading || !userLocation) {
+    return <LoadingPage />;
   }
 
   return (
     <View style={styles.container}>
+      <GooglePlacesAutocomplete
+        placeholder="Search location"
+        fetchDetails={true}
+        GooglePlacesSearchQuery={{
+          rankby: "distance",
+        }}
+        onPress={(data, details = null) => {
+          // 'details' is provided when fetchDetails = true
+          const searchedLocation = {
+            latitude: details.geometry.location.lat,
+            longitude: details.geometry.location.lng,
+            latitudeDelta: 0.04,
+            longitudeDelta: 0.04,
+          };
+          setPostLocation(searchedLocation);
+        }}
+        query={{
+          key: "AIzaSyAZ_TcJdgwv2a33-EW_x7yQgud2ECu9hWU",
+          language: "en",
+        }}
+        styles={{
+          container: {
+            flex: 0,
+            position: "absolute",
+            width: "100%",
+            zIndex: 1000,
+            top: 55,
+            paddingHorizontal: 10,
+          },
+          listView: { backgroundColor: "white" },
+        }}
+      />
       <MapView
         style={styles.map}
         provider="google"
+        initialRegion={postLocation}
         onRegionChangeComplete={async (e) => {
-          setShowLocation([e.latitude, e.longitude, e.longitudeDelta]);
-          const limits = await map.getMapBoundaries();
-          //console.log(limits);
-        }}
-        initialRegion={{
-          latitude: 53.467258,
-          longitude: -2.2,
-          latitudeDelta: 0.0922 * 10,
-          longitudeDelta: 0.0423 * 10,
+          const limitsNew = await map.getMapBoundaries();
+          const distance = pythagoras(
+            limits.northEast.latitude,
+            limits.northEast.longitude,
+            limits.southWest.latitude,
+            limits.southWest.longitude
+          );
+          const distanceNew = pythagoras(
+            limitsNew.northEast.latitude,
+            limitsNew.northEast.longitude,
+            limitsNew.southWest.latitude,
+            limitsNew.southWest.longitude
+          );
+          if (Math.abs(distance - distanceNew) > 0.2) {
+            console.log(
+              Math.abs(distance - distanceNew),
+              distanceNew,
+              distance
+            );
+            setLimits(limitsNew);
+            setPostLocation(e);
+            //load new posts
+          }
         }}
         ref={(ref) => {
           setMap(ref);
@@ -87,18 +177,28 @@ export const MapPage = () => {
         showsUserLocation={true}
         mapType="hybrid"
       >
-        {LOCATIONS.map((location, index) => {
+        {posts.map((post) => {
+          console.log(post.Latitude1);
+          console.log(postLocation.longitudeDelta);
           return (
             <Marker
               coordinate={{
-                latitude: region.latitude + location[0],
-                longitude: region.longitude + location[1],
+                latitude: post.Latitude1,
+                longitude: post.Longitude1,
               }}
-              key={index}
+              key={post.id}
             >
               <View
                 style={{
-                  transform: [{ scale: 1 - showLocation[2] / 100 }],
+                  transform: [
+                    {
+                      scale:
+                        1 -
+                        (postLocation.longitudeDelta > 2.5
+                          ? 0.2
+                          : postLocation.longitudeDelta / 4),
+                    },
+                  ],
                 }}
               >
                 <View
@@ -114,7 +214,7 @@ export const MapPage = () => {
                 >
                   <Image
                     source={{
-                      uri: img.uri,
+                      uri: post.image,
                     }}
                     resizeMode={"cover"}
                     style={{
@@ -129,37 +229,47 @@ export const MapPage = () => {
             </Marker>
           );
         })}
-
-        {markers.map((location, index) => {
-          return (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: location.coordinate.lat,
-                longitude: location.coordinate.long,
-              }}
-              title={location.title}
-              description={location.description}
-            />
-          );
-        })}
-
-        {userLocation ? (
-          <Marker
-            coordinate={{
-              latitude: userLocation.coords.latitude,
-              longitude: userLocation.coords.longitude,
-            }}
-            onDragEnd={(e) => log("onDragEnd", e)}
-            onPress={(e) => log("onPress", e)}
-            draggable
-            title="move me"
-          ></Marker>
-        ) : null}
       </MapView>
+
+      <View style={[styles.bottom]}>
+        <FlatList
+          data={posts}
+          horizontal={true}
+          extraData={true}
+          renderItem={({ item }) => (
+            <CssPostCard posts={item} navigation={navigation} />
+          )}
+          keyExtractor={(item) => item.id}
+          style={{ paddingTop: 30 }}
+          ItemSeparatorComponent={() => (
+            <View style={{ marginVertical: 5 }}></View>
+          )}
+          ListFooterComponent={() => (
+            <View style={styles.mb5}>
+              {!loadingPost ? (
+                <Button
+                  mode="contained"
+                  dark={true}
+                  onPress={() => {
+                    setPage(posts[posts.length - 1].createdDate);
+                    loadPosts(posts[posts.length - 1].createdDate);
+                  }}
+                  color="#7C9A92"
+                  style={styles.Loading}
+                >
+                  Load more...
+                </Button>
+              ) : (
+                <Text style={styles.textThick}>Loading ...</Text>
+              )}
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -168,30 +278,34 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height - 20,
-  },
-  form: {
     flex: 1,
-    justifyContent: "center",
-    flexDirection: "column",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+  bottom: {
+    zIndex: 999,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    width: "100%",
+    paddingVertical: 12,
+    paddingHorizontal: 0,
+    height: "50%",
   },
   button: {
-    flex: 0.2,
-    alignItems: "center",
+    position: "absolute",
+    top: 60,
+    left: 10,
+    zIndex: 999,
     backgroundColor: "black",
-    padding: 10,
-    height: 45,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   text: {
-    fontSize: 18,
+    fontSize: 30,
     color: "white",
+    textAlign: "center",
+    fontWeight: "bold",
   },
   triangle: {
     width: 0,
@@ -208,40 +322,5 @@ const styles = StyleSheet.create({
     marginTop: -15,
     zIndex: -1,
     transform: [{ rotate: "180deg" }],
-  },
-  button: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    zIndex: 999,
-    backgroundColor: "black",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  bottom: {
-    zIndex: 999,
-    position: "absolute",
-    top: Dimensions.get("window").height - 130,
-    left: 0,
-    width: "100%",
-    borderTopStartRadius: 40,
-    borderTopEndRadius: 40,
-    paddingVertical: 40,
-    paddingHorizontal: 0,
-    backgroundColor: "black",
-  },
-  text: {
-    fontSize: 18,
-    color: "white",
-    textAlign: "center",
-  },
-  location: {
-    fontSize: 20,
-    color: "white",
-    textAlign: "center",
-    zIndex: 999,
-    position: "absolute",
-    top: Dimensions.get("window").height - Dimensions.get("window").height / 2,
-    left: 80,
   },
 });
