@@ -123,6 +123,7 @@ const getComments = (postId) => {
       comments.forEach((comment) => {
         commentArr.push(comment.data());
       });
+
       return commentArr;
     })
     .catch((err) => {
