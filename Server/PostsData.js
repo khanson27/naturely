@@ -1,4 +1,4 @@
-import { firestore } from "./firebase.js";
+import { firestore } from './firebase.js';
 import {
   doc,
   getDocs,
@@ -14,10 +14,10 @@ import {
   endAt,
   orderBy,
   startAfter,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
 const createPost = (postInfo) => {
-  return addDoc(collection(firestore, "posts"), postInfo)
+  return addDoc(collection(firestore, 'posts'), postInfo)
     .then(() => {
       return null;
     })
@@ -31,25 +31,25 @@ const getPosts = ({ Page, Topics, Location, order }) => {
   const filterSort = () => {
     if (topicsArr.length) {
       return query(
-        collection(firestore, "posts"),
-        where("topics", "array-contains-any", topics),
-        orderBy("createdDate", "desc"),
+        collection(firestore, 'posts'),
+        where('topics', 'array-contains-any', topics),
+        orderBy('createdDate', 'desc'),
         startAfter(Page),
         limit(10)
       );
     } else if (Location) {
       return query(
-        collection(firestore, "posts"),
-        where("locationName", "array-contains", Location),
-        orderBy("createdDate", "desc"),
+        collection(firestore, 'posts'),
+        where('locationName', 'array-contains', Location),
+        orderBy('createdDate', 'desc'),
         startAfter(Page),
         limit(10)
       );
     } else {
       return query(
         query(
-          collection(firestore, "posts"),
-          orderBy("createdDate", "desc"),
+          collection(firestore, 'posts'),
+          orderBy('createdDate', 'desc'),
           startAfter(Page),
           limit(10)
         )
@@ -71,9 +71,9 @@ const getUserPosts = (username) => {
   const postArr = [];
   return getDocs(
     query(
-      collection(firestore, "posts"),
-      where("username", "==", username),
-      orderBy("createdDate", "desc")
+      collection(firestore, 'posts'),
+      where('author', '==', username),
+      orderBy('createdDate', 'desc')
     )
   )
     .then((arr) => {
@@ -88,7 +88,7 @@ const getUserPosts = (username) => {
 };
 
 const getSinglePost = (postId) => {
-  return getDoc(doc(firestore, "posts", postId))
+  return getDoc(doc(firestore, 'posts', postId))
     .then((post) => {
       return post.data();
     })
@@ -97,12 +97,12 @@ const getSinglePost = (postId) => {
     });
 };
 const createComment = (postId, commentContent, username) => {
-  return addDoc(collection(firestore, "comments"), commentContent)
+  return addDoc(collection(firestore, 'comments'), commentContent)
     .then((comment) => {
-      updateDoc(doc(firestore, "posts", postId), {
+      updateDoc(doc(firestore, 'posts', postId), {
         comments: arrayUnion(comment.id),
       });
-      updateDoc(doc(firestore, "users", username), {
+      updateDoc(doc(firestore, 'users', username), {
         comments: arrayUnion(comment.id),
       });
       return comment;
@@ -116,9 +116,9 @@ const getComments = (postId) => {
   const commentArr = [];
   return getDocs(
     query(
-      collection(firestore, "comments"),
-      where("postId", "==", postId),
-      orderBy("createdDate")
+      collection(firestore, 'comments'),
+      where('postId', '==', postId),
+      orderBy('createdDate')
     )
   )
     .then((comments) => {

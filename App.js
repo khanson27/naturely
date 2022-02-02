@@ -159,7 +159,15 @@ const BrowseStackScreen = () => (
     />
     <BrowseStack.Screen
       name="OtherUsersPage"
-      options={{ headerShown: false }}
+      options={{
+        headerMode: 'screen',
+        header: ({ navigation }) => {
+          return <Header title={'User Profile'} navigation={navigation} />;
+        },
+        headerStyle: {
+          height: 80, // Specify the height of your custom header
+        },
+      }}
       component={OtherUsersPage}
     />
   </BrowseStack.Navigator>
