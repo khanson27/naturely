@@ -52,7 +52,7 @@ const CssPostCard = ({ posts, navigation }) => {
           </Text>
           <Text style={styles.timeText}>{`posted ${timeSince(
             posts.createdDate
-          )} days ago...`}</Text>
+          )} ago...`}</Text>
           <View style={styles.chipContainer}>
             <View style={styles.chipItem}>
               <Chip
