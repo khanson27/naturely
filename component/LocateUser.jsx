@@ -33,7 +33,7 @@ export const LocateUser = ({ navigation }) => {
   };
 
   const getLocationsName = async () => {
-    const locName = await Location.reverseGeocodeAsync(locationSearch);
+    const locName = await Location.reverseGeocodeAsync(userLocation);
     if (locName.length) {
       const {
         city,
