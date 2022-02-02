@@ -17,16 +17,40 @@ import {
 } from 'firebase/firestore';
 
 const createPost = (postInfo) => {
+<<<<<<< HEAD
+  return addDoc(collection(firestore, "posts"), postInfo)
+    .then(() => {
+      return null;
+=======
   addDoc(collection(firestore, 'posts'), postInfo)
     .then((post) => {
       return post;
+>>>>>>> main
     })
     .catch((err) => alert(err.message));
 };
 
-const getPosts = (page, topics) => {
-  const topicsArr = topics || [];
+const getPosts = ({ Page, Topics, Location, order }) => {
+  const topicsArr = Topics || [];
   const postArray = [];
+<<<<<<< HEAD
+  console.log(Location);
+  const filterSort = () => {
+    if (topicsArr.length) {
+      return query(
+        collection(firestore, "posts"),
+        where("topics", "array-contains-any", topics),
+        orderBy("createdDate", "desc"),
+        startAfter(Page),
+        limit(10)
+      );
+    } else if (Location) {
+      return query(
+        collection(firestore, "posts"),
+        where("locationName", "array-contains", Location),
+        orderBy("createdDate", "desc"),
+        startAfter(Page),
+=======
   if (topicsArr.length) {
     return getDocs(
       query(
@@ -51,18 +75,29 @@ const getPosts = (page, topics) => {
         collection(firestore, 'posts'),
         orderBy('createdDate', 'desc'),
         startAfter(page),
+>>>>>>> main
         limit(10)
-      )
-    )
-      .then((arr) => {
-        arr.forEach((doc) => {
-          const docData = doc.data();
-          postArray.push({ ...docData, id: doc.id });
-        });
-        return postArray;
-      })
-      .catch((err) => alert(err.message));
-  }
+      );
+    } else {
+      return query(
+        query(
+          collection(firestore, "posts"),
+          orderBy("createdDate", "desc"),
+          startAfter(Page),
+          limit(10)
+        )
+      );
+    }
+  };
+  return getDocs(filterSort())
+    .then((arr) => {
+      arr.forEach((doc) => {
+        const docData = doc.data();
+        postArray.push({ ...docData, id: doc.id });
+      });
+      return postArray;
+    })
+    .catch((err) => console.log(err.message));
 };
 
 const getUserPosts = (username) => {

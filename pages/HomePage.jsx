@@ -12,6 +12,8 @@ import { useState, useEffect } from "react";
 import CssPostCard from "../component/CssPostCard";
 import { LoadingPage } from "./LoadingPage";
 import { ChooseTopic } from "../component/ChooseTopics";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import * as Location from "expo-location";
 
 export const HomePage = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
@@ -20,12 +22,15 @@ export const HomePage = ({ navigation }) => {
   const [loadingPost, setLoadingPosts] = useState(false);
   const [selectedTopics, setSelectedTopics] = useState([]);
   const [visible, setVisible] = useState(false);
+  const [visibleSearch, setVisibleSearch] = useState(false);
+  const showModalSearch = () => setVisibleSearch(true);
+  const hideModelSearch = () => setVisibleSearch(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
   useEffect(() => {
     setIsLoading(true);
-    getPosts(page).then((data) => {
+    getPosts({ Page: page }).then((data) => {
       setPosts(data);
       setIsLoading(false);
     });
@@ -33,7 +38,7 @@ export const HomePage = ({ navigation }) => {
 
   const loadPosts = (newPage) => {
     setLoadingPosts(true);
-    getPosts(newPage).then((data) => {
+    getPosts({ Page: newPage }).then((data) => {
       setPosts((curr) => {
         return [...curr, ...data];
       });
@@ -42,11 +47,30 @@ export const HomePage = ({ navigation }) => {
   };
 
   const filterByTopic = () => {
+    if (selectedTopics.length) {
+      setIsLoading(true);
+      getPosts({ Page: 1000000000000000000000, Topics: selectedTopics }).then(
+        (data) => {
+          setPosts(data);
+          setIsLoading(false);
+        }
+      );
+    }
+  };
+  const filterByLocation = async ({ searchName, longitude, latitude }) => {
     setIsLoading(true);
-    getPosts(1000000000000000000000, selectedTopics).then((data) => {
-      setPosts(data);
-      setIsLoading(false);
-    });
+    const locName = await Location.reverseGeocodeAsync({ longitude, latitude });
+    if (locName.length) {
+      getPosts({
+        Page: 1000000000000000000000,
+        Location: searchName,
+      }).then((data) => {
+        setPosts(data);
+        setIsLoading(false);
+      });
+    } else {
+      Alert.alert("Locations within oceans are not supported");
+    }
   };
 
   if (isLoading) {
@@ -78,6 +102,50 @@ export const HomePage = ({ navigation }) => {
               />
             </Modal>
           </Portal>
+
+          <Portal>
+            <Modal
+              visible={visibleSearch}
+              onDismiss={() => {
+                hideModelSearch();
+              }}
+              contentContainerStyle={styles.topicsWrap}
+            >
+              <GooglePlacesAutocomplete
+                placeholder="Search location"
+                fetchDetails={true}
+                GooglePlacesSearchQuery={{
+                  rankby: "distance",
+                }}
+                onPress={(data, details = null) => {
+                  // 'details' is provided when fetchDetails = true
+                  console.log(details.formatted_address);
+                  filterByLocation({
+                    searchName: details.formatted_address,
+                    latitude: details.geometry.location.lat,
+                    longitude: details.geometry.location.lng,
+                  });
+                  hideModelSearch();
+                }}
+                query={{
+                  key: "AIzaSyAZ_TcJdgwv2a33-EW_x7yQgud2ECu9hWU",
+                  language: "en",
+                }}
+                styles={{
+                  container: {
+                    width: "100%",
+                    zIndex: 9999,
+                    paddingHorizontal: 10,
+                  },
+                  listView: {
+                    backgroundColor: "white",
+                    zIndex: 9999,
+                  },
+                }}
+              />
+            </Modal>
+          </Portal>
+
           <>
             <FlatList
               data={posts}
@@ -91,15 +159,26 @@ export const HomePage = ({ navigation }) => {
                 <View style={{ marginVertical: 5 }}></View>
               )}
               ListHeaderComponent={() => (
-                <Button
-                  mode="contained"
-                  dark={true}
-                  onPress={showModal}
-                  color="#7C9A92"
-                  style={styles.Loading}
-                >
-                  Topics Filter
-                </Button>
+                <>
+                  <Button
+                    mode="contained"
+                    dark={true}
+                    onPress={showModal}
+                    color="#7C9A92"
+                    style={styles.Loading}
+                  >
+                    Topics Filter
+                  </Button>
+                  <Button
+                    mode="contained"
+                    dark={true}
+                    onPress={showModalSearch}
+                    color="#7C9A92"
+                    style={styles.Loading}
+                  >
+                    search for loaction
+                  </Button>
+                </>
               )}
               ListFooterComponent={() => (
                 <View style={styles.mb5}>
@@ -139,9 +218,9 @@ const styles = StyleSheet.create({
   },
   Loading: {
     width: "35%",
-    paddingVertical: 6,
+    paddingVertical: 3,
     alignSelf: "center",
-    marginBottom: 40,
+    marginBottom: 10,
   },
   topicsWrap: {
     flexDirection: "row",

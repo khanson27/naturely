@@ -45,7 +45,7 @@ export const AddTopicPage = () => {
         page: "topic",
       });
       await createTopic({
-        imageURL,
+        image: imageURL,
         username: userData.username,
         title,
         description,

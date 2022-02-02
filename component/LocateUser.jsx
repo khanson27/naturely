@@ -33,10 +33,32 @@ export const LocateUser = ({ navigation }) => {
   };
 
   const getLocationsName = async () => {
-    const locName = await Location.reverseGeocodeAsync(postLocation);
-    const { city, district, subregion, region, country } = locName[0];
-    //console.log(city, district, subregion, region, country);
-    setPostLocationName(city || district || subregion || region || country);
+    const locName = await Location.reverseGeocodeAsync(locationSearch);
+    if (locName.length) {
+      const {
+        city,
+        district,
+        subregion,
+        region,
+        country,
+        isoCountryCode,
+        name,
+        postalCode,
+      } = locName[0];
+      setPostLocationName([
+        city,
+        district,
+        subregion,
+        region,
+        country,
+        isoCountryCode,
+        name,
+        postalCode,
+      ]);
+      // setPostLocationName(city || district || subregion || region || country);
+    } else {
+      Alert.alert("Locations within oceans are not supported");
+    }
   };
 
   const pythagoras = (x1, x2, y1, y2) => {

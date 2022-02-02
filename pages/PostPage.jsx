@@ -53,25 +53,29 @@ export const PostPage = ({ navigation }) => {
       return;
     } else {
       setIsLoading(true);
+
       createPost({
         description,
         createdDate: Date.now(),
         locationName: postLocationName,
-        topics: selectedTopics,
-        Latitude1: postLocation.latitude,
-        Latitude2: postLocation.latitude,
-        Longitude1: postLocation.longitude,
-        Longitude2: postLocation.longitude,
+        topics: ["all", ...selectedTopics],
+        Latitude: postLocation.latitude,
+        Longitude: postLocation.longitude,
         likes: [],
+        likeCounter: 0,
         comments: [],
         author: userData.username,
         image: await uploadImage({
           image: img.uri,
           path: `posts/${Math.random().toString(36)}`,
         }),
-      }).then(() => {
-        setIsLoading(false);
-      });
+      })
+        .then(() => {
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -188,7 +192,7 @@ export const PostPage = ({ navigation }) => {
               style={styles.chip}
               textStyle={{ color: "#fff", fontSize: 16 }}
             >
-              {postLocationName}
+              {postLocationName.find((loc) => loc)}
             </Chip>
           )}
         </View>
