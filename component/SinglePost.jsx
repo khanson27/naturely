@@ -44,7 +44,6 @@ export const SinglePost = ({ navigation, route }) => {
       setIsLoading(false);
       return;
     }
-
     return createComment(
       postId,
       {
