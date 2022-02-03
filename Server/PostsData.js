@@ -24,35 +24,54 @@ const createPost = (postInfo) => {
     .catch((err) => alert(err.message));
 };
 
-const getPosts = ({ Page, Topics, Location, order }) => {
-  const topicsArr = Topics || [];
+const getPosts = ({
+  Page,
+  Topics,
+  Location,
+  order,
+  extraLocations,
+  LongitudeMax,
+  LongitudeMin,
+}) => {
   const postArray = [];
-  console.log(Location);
+  //console.log(Topics);
+  if (Topics.length > 1) Topics = Topics.filter((str) => str != "all");
   const filterSort = () => {
-    if (topicsArr.length) {
+    if (Location) {
+      console.log(extraLocations);
+      console.log([
+        ...Location.split(", "),
+        ...extraLocations.filter((loc) => loc),
+      ]);
       return query(
         collection(firestore, "posts"),
-        where("topics", "array-contains-any", topics),
-        orderBy("createdDate", "desc"),
-        startAfter(Page),
-        limit(10)
+        where("locationName", "array-contains-any", [
+          ...Location.split(", "),
+          ...extraLocations.filter((loc) => loc),
+        ]),
+        orderBy("createdDate", "desc")
+        // startAfter(Page),
+        // limit(10)
       );
-    } else if (Location) {
+    }
+    // } else if (LongitudeMax && LongitudeMin) {
+    //   if (LongitudeMax < LongitudeMin) {
+    //     [LongitudeMax, LongitudeMin] = [LongitudeMax, LongitudeMin];
+    //   }
+    //   return query(
+    //     collection(firestore, "posts"),
+    //     where("Longitude", "<", LongitudeMax),
+    //     where("Longitude", ">", LongitudeMin),
+    //     limit(100)
+    //   );
+    // }
+    else {
       return query(
         collection(firestore, "posts"),
-        where("locationName", "array-contains", Location),
-        orderBy("createdDate", "desc"),
-        startAfter(Page),
-        limit(10)
-      );
-    } else {
-      return query(
-        query(
-          collection(firestore, "posts"),
-          orderBy("createdDate", "desc"),
-          startAfter(Page),
-          limit(10)
-        )
+        where("topics", "array-contains-any", Topics),
+        orderBy("createdDate", "desc")
+        // startAfter(Page),
+        // limit(10)
       );
     }
   };
