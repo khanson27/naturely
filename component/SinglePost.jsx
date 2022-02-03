@@ -143,10 +143,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     height: 300,
     width: 300,
+    marginTop: 25,
   },
   text: {
     fontSize: 15,
