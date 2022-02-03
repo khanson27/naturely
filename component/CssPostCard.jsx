@@ -6,66 +6,134 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState, useContext } from "react";
+import { UserContext } from "../context/userContext";
 import { Chip } from "react-native-paper";
 import { timeSince } from "../utils/pastTime";
+import {
+  MaterialCommunityIcons,
+  Entypo,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
-const CssPostCard = ({ posts, navigation }) => {
+const CssPostCard = ({ posts, navigation, pageUsed = false, onClick }) => {
   const [addComment, setAddComment] = useState(true);
+  const { userData } = useContext(UserContext);
+  const place = posts.locationName;
   return (
     <TouchableWithoutFeedback
       onLongPress={() => {
+        //console.log("post pressed");
         navigation.push("SinglePost", {
           postId: posts.id,
         });
       }}
+      onPress={() => {
+        onClick.animateCamera({
+          center: {
+            latitude: posts.Latitude,
+            longitude: posts.Longitude,
+          },
+        });
+      }}
       activeOpacity={0.5}
     >
-      <View style={styles.container}>
-        <View style={styles.imageContainer}>
+      <View style={pageUsed ? styles.containerMap : styles.container}>
+        <View style={pageUsed ? styles.imageMap : styles.imageContainer}>
           <Image source={{ uri: posts.image }} style={styles.image} />
         </View>
         <View style={styles.spacer} />
         <View style={styles.textContainer}>
           <View style={styles.locationTextContainer}>
-            <Image
-              style={styles.locationIcon}
-              source={require("../assets/location-pin.png")}
-            />
-            <Text
-              ellipsizeMode="tail"
-              numberOfLines={1}
-              style={styles.locationText}
-            >
-              {posts.locationName}
-            </Text>
+            <View style={styles.editIcons}>
+              <MaterialCommunityIcons
+                name="map-marker-radius"
+                size={20}
+                color="#7C9A92"
+              />
+              <Text
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                style={styles.locationText}
+              >
+                {place[0] ||
+                  place[1] ||
+                  place[2] ||
+                  place[3] ||
+                  place[4] ||
+                  place[5]}
+              </Text>
+            </View>
+            <View style={styles.editIcons}>
+              {userData.username === posts.author ? (
+                <>
+                  <Entypo
+                    name="edit"
+                    size={23}
+                    color="#253334"
+                    style={{ marginHorizontal: 2 }}
+                  />
+                  <MaterialIcons
+                    name="delete-outline"
+                    size={24}
+                    color="#253334"
+                  />
+                </>
+              ) : null}
+            </View>
           </View>
-          <Text style={styles.usernameText}>{posts.author}</Text>
+          <Text style={pageUsed ? styles.nameMap : styles.usernameText}>
+            {posts.author}
+          </Text>
           <Text
             ellipsizeMode="tail"
-            numberOfLines={2}
-            style={styles.descriptionText}
+            numberOfLines={pageUsed ? 1 : 2}
+            style={pageUsed ? styles.descMap : styles.descriptionText}
           >
             {posts.description}
           </Text>
-          <Text style={styles.tagsText} ellipsizeMode="tail" numberOfLines={4}>
+          <Text
+            style={pageUsed ? styles.tagsTextMap : styles.tagsText}
+            ellipsizeMode="tail"
+            numberOfLines={pageUsed ? 1 : 4}
+          >
             {`#${posts.topics.join(" #")}`}
           </Text>
           <Text style={styles.timeText}>{`posted ${timeSince(
             posts.createdDate
-          )} ago...`}</Text>
+          )} days ago...`}</Text>
           <View style={styles.chipContainer}>
             <View style={styles.chipItem}>
               <Chip
-                style={styles.chip}
-                icon="thumb-up-outline"
-                textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
+                style={pageUsed ? styles.mapChip : styles.chip}
+                icon={() => (
+                  <MaterialCommunityIcons
+                    name="thumb-up-outline"
+                    size={pageUsed ? 11 : 22}
+                    color="#fff"
+                  />
+                )}
+                textStyle={{
+                  color: "#FFFFFF",
+                  fontWeight: "bold",
+                  fontSize: pageUsed ? 10 : 20,
+                }}
               >
                 {posts.likes.length}
               </Chip>
               <Chip
-                style={styles.chip}
-                icon="comment-outline"
-                textStyle={{ color: "#FFFFFF", fontWeight: "bold" }}
+                style={pageUsed ? styles.mapChip : styles.chip}
+                icon={() => (
+                  <MaterialCommunityIcons
+                    name="comment-outline"
+                    size={pageUsed ? 11 : 22}
+                    color="#fff"
+                  />
+                )}
+                textStyle={{
+                  color: "#FFFFFF",
+                  fontWeight: "bold",
+                  fontSize: pageUsed ? 10 : 20,
+                }}
               >
                 {posts.comments.length}
               </Chip>
@@ -90,10 +158,43 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     flexDirection: "row",
   },
+  containerMap: {
+    height: 140,
+    backgroundColor: "#FCFFEF",
+    marginVertical: 0,
+    marginHorizontal: 6,
+    paddingBottom: 3,
+    paddingTop: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    flexDirection: "row",
+  },
   image: {
     flex: 1,
     backgroundColor: "#FCFFEF",
     borderRadius: 5,
+  },
+  imageMap: {
+    flex: 1,
+    backgroundColor: "#FCFFEF",
+    borderRadius: 5,
+    height: 125,
+    width: 100,
+  },
+  usernameText: {
+    marginLeft: 5,
+    marginTop: 3,
+    color: "#253334",
+    fontSize: 25,
+  },
+  nameMap: {
+    fontSize: 15,
+    marginVertical: 3,
+  },
+  descMap: {
+    fontSize: 10,
+    marginVertical: 1,
+    color: "#253334",
   },
   imageContainer: {
     flex: 0.4,
@@ -107,6 +208,7 @@ const styles = StyleSheet.create({
   locationTextContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   locationText: {
     color: "#7C9A92",
@@ -117,12 +219,7 @@ const styles = StyleSheet.create({
     height: 24,
     width: 24,
   },
-  usernameText: {
-    marginLeft: 5,
-    marginTop: 3,
-    color: "#253334",
-    fontSize: 25,
-  },
+
   descriptionText: {
     marginLeft: 5,
     marginVertical: 5,
@@ -134,8 +231,11 @@ const styles = StyleSheet.create({
     color: "#7C9A92",
     fontSize: 13,
   },
+  tagsTextMap: {
+    color: "#7C9A92",
+    fontSize: 10,
+  },
   timeText: {
-    marginLeft: 5,
     color: "#253334",
     fontSize: 11,
   },
@@ -149,6 +249,16 @@ const styles = StyleSheet.create({
   },
   chip: {
     marginLeft: 10,
-    backgroundColor: "#7C9A92",
+    padding: 0.5,
+    backgroundColor: "#253334",
+  },
+  mapChip: {
+    marginLeft: 3,
+    padding: 0,
+    backgroundColor: "#253334",
+  },
+  editIcons: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

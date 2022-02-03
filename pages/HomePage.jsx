@@ -18,9 +18,10 @@ import * as Location from "expo-location";
 export const HomePage = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1000000000000000000000);
+  const [limit, setLimit] = useState(10);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingPost, setLoadingPosts] = useState(false);
-  const [selectedTopics, setSelectedTopics] = useState([]);
+  const [selectedTopics, setSelectedTopics] = useState(["all"]);
   const [visible, setVisible] = useState(false);
   const [visibleSearch, setVisibleSearch] = useState(false);
   const showModalSearch = () => setVisibleSearch(true);
@@ -30,19 +31,28 @@ export const HomePage = ({ navigation }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    getPosts({ Page: page }).then((data) => {
+    getPosts({ Page: page, Topics: selectedTopics }).then((data) => {
       setPosts(data);
       setIsLoading(false);
     });
   }, []);
 
-  const loadPosts = (newPage) => {
-    setLoadingPosts(true);
-    getPosts({ Page: newPage }).then((data) => {
-      setPosts((curr) => {
-        return [...curr, ...data];
-      });
-      setLoadingPosts(false);
+  // const loadPosts = (newPage) => {
+  //   setLoadingPosts(true);
+  //   getPosts({ Page: newPage, Topics: selectedTopics }).then((data) => {
+  //     setPosts((curr) => {
+  //       return [...curr, ...data];
+  //     });
+  //     setLoadingPosts(false);
+  //   });
+  // };
+
+  const refreshPost = () => {
+    setIsLoading(true);
+    setSelectedTopics(["all"]);
+    getPosts({ Page: page, Topics: ["all"] }).then((data) => {
+      setPosts(data);
+      setIsLoading(false);
     });
   };
 
@@ -60,10 +70,17 @@ export const HomePage = ({ navigation }) => {
   const filterByLocation = async ({ searchName, longitude, latitude }) => {
     setIsLoading(true);
     const locName = await Location.reverseGeocodeAsync({ longitude, latitude });
+    console.log(locName);
     if (locName.length) {
       getPosts({
         Page: 1000000000000000000000,
         Location: searchName,
+        extraLocations: [
+          locName[0].city,
+          locName[0].district,
+          locName[0].subregion,
+        ],
+        Topics: selectedTopics,
       }).then((data) => {
         setPosts(data);
         setIsLoading(false);
@@ -119,7 +136,6 @@ export const HomePage = ({ navigation }) => {
                 }}
                 onPress={(data, details = null) => {
                   // 'details' is provided when fetchDetails = true
-                  console.log(details.formatted_address);
                   filterByLocation({
                     searchName: details.formatted_address,
                     latitude: details.geometry.location.lat,
@@ -148,7 +164,7 @@ export const HomePage = ({ navigation }) => {
 
           <>
             <FlatList
-              data={posts}
+              data={posts.slice(0, limit)}
               extraData={true}
               renderItem={({ item }) => (
                 <CssPostCard posts={item} navigation={navigation} />
@@ -159,7 +175,16 @@ export const HomePage = ({ navigation }) => {
                 <View style={{ marginVertical: 5 }}></View>
               )}
               ListHeaderComponent={() => (
-                <>
+                <View style={styles.topnav}>
+                  <Button
+                    mode="contained"
+                    dark={true}
+                    onPress={refreshPost}
+                    color="#7C9A92"
+                    style={styles.Loading}
+                  >
+                    Refresh
+                  </Button>
                   <Button
                     mode="contained"
                     dark={true}
@@ -167,7 +192,7 @@ export const HomePage = ({ navigation }) => {
                     color="#7C9A92"
                     style={styles.Loading}
                   >
-                    Topics Filter
+                    Topics
                   </Button>
                   <Button
                     mode="contained"
@@ -176,19 +201,20 @@ export const HomePage = ({ navigation }) => {
                     color="#7C9A92"
                     style={styles.Loading}
                   >
-                    search for loaction
+                    Location
                   </Button>
-                </>
+                </View>
               )}
               ListFooterComponent={() => (
-                <View style={styles.mb5}>
-                  {!loadingPost ? (
+                <View style={{ marginVertical: 40 }}>
+                  {!loadingPost && limit <= posts.length ? (
                     <Button
                       mode="contained"
                       dark={true}
                       onPress={() => {
                         setPage(posts[posts.length - 1].createdDate);
-                        loadPosts(posts[posts.length - 1].createdDate);
+                        setLimit((currLimit) => currLimit + 10);
+                        //loadPosts(posts[posts.length - 1].createdDate);
                       }}
                       color="#7C9A92"
                       style={styles.Loading}
@@ -217,10 +243,11 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   Loading: {
-    width: "35%",
+    width: "30%",
     paddingVertical: 3,
     alignSelf: "center",
     marginBottom: 10,
+    marginHorizontal: 2,
   },
   topicsWrap: {
     flexDirection: "row",
@@ -240,5 +267,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginBottom: 40,
     fontSize: 20,
+  },
+  topnav: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
