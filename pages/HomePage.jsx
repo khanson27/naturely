@@ -176,7 +176,7 @@ export const HomePage = ({ navigation }) => {
                     color="#7C9A92"
                     style={styles.Loading}
                   >
-                    search for loaction
+                    Location Filter
                   </Button>
                 </>
               )}
@@ -191,9 +191,9 @@ export const HomePage = ({ navigation }) => {
                         loadPosts(posts[posts.length - 1].createdDate);
                       }}
                       color="#7C9A92"
-                      style={styles.Loading}
+                      style={{ ...styles.Loading, marginBottom: 35 }}
                     >
-                      Load more...
+                      Load more
                     </Button>
                   ) : (
                     <Text style={styles.textThick}>Loading ...</Text>
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   Loading: {
-    width: "35%",
+    width: "50%",
     paddingVertical: 3,
     alignSelf: "center",
     marginBottom: 10,

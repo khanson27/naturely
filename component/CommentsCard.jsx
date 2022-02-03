@@ -2,20 +2,41 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 
 const CommentsCards = ({ comments }) => {
-  console.log(comments);
   return (
     <View style={styles.container}>
-      <Text>{comments.author}</Text>
-      <Text>{comments.createdDate}</Text>
-      <Text>{comments.comment}</Text>
+      <View style={styles.textContainer}>
+        <Text>{comments.author}</Text>
+        <Text>{comments.createdDate}</Text>
+      </View>
+      <View style={styles.commentContainer}>
+        <Text>{comments.comment}</Text>
+      </View>
     </View>
   );
 };
 export default CommentsCards;
 const styles = StyleSheet.create({
   container: {
+    flexDirection: "column",
     height: 60,
-    width: 60,
-    backgroundColor: "blue",
+    width: "80%",
+    backgroundColor: "#FCFFEF",
+    color: "white",
+    justifyContent: "center",
+    display: "flex",
+    borderRadius: 40,
+    marginBottom: 20,
+  },
+  textContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  commentContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

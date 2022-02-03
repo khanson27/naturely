@@ -92,89 +92,89 @@ export const ProfilePage = () => {
       style={styles.Background}
       blurRadius={5}
     >
-      <View style={styles.profileContainer}>
-        <View style={styles.borderImg}>
-          <Image
-            style={styles.avatar}
-            source={{ uri: img.uri || user.avatar_url }}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          {img.uri ? (
-            <Chip
-              closeIcon={() => (
-                <MaterialCommunityIcons name="close" size={20} color="#fff" />
-              )}
-              onClose={() => setImg({})}
-              style={styles.chip}
-              textStyle={{ color: "#fff", fontSize: 16 }}
-              onPress={editAvatar}
-            >
-              <Icon name="save" />
-            </Chip>
-          ) : (
-            <TouchableOpacity style={styles.customButton} onPress={pickImage}>
+      <ScrollView>
+        <View style={styles.profileContainer}>
+          <View style={styles.borderImg}>
+            <Image
+              style={styles.avatar}
+              source={{ uri: img.uri || user.avatar_url }}
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            {img.uri ? (
+              <Chip
+                closeIcon={() => (
+                  <MaterialCommunityIcons name="close" size={20} color="#fff" />
+                )}
+                onClose={() => setImg({})}
+                style={styles.chip}
+                textStyle={{ color: "#fff", fontSize: 16 }}
+                onPress={editAvatar}
+              >
+                <Icon name="save" />
+              </Chip>
+            ) : (
+              <TouchableOpacity style={styles.customButton} onPress={pickImage}>
+                <Icon name="edit" />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.userDetails}>
+            <View style={{ marginLeft: 55 }}>
+              <Text style={{ textAlign: "center" }}>{user.username}</Text>
+              <Text style={{ textAlign: "center" }}>{user.email}</Text>
+            </View>
+            <TouchableOpacity style={styles.customButton}>
               <Icon name="edit" />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.customButton}>
+              <Icon name="delete" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.friendContainer}>
+          <Image
+            source={{
+              uri: "https://media.comicbook.com/2021/04/attack-on-titan-ending-levi-ackerman-1263774.jpeg?auto=webp&width=1200&height=675&crop=1200:675,smart",
+            }}
+            style={styles.friendImage}
+          />
+          <Image
+            source={{
+              uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu1MMT8BUmERLt1GEZwFvYVtTD7YOfEYsYxA&usqp=CAU",
+            }}
+            style={styles.friendImage}
+          />
+          <Image
+            source={{
+              uri: "https://www.personality-database.com/profile_images/12344.png",
+            }}
+            style={styles.friendImage}
+          />
+          <Image
+            source={{
+              uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfXmGRshbNAaElslvI4CLpQwG_LbFJw3YBaw&usqp=CAU",
+            }}
+            style={styles.friendImage}
+          />
+          <Image
+            source={{
+              uri: "https://mfiles.alphacoders.com/749/749909.jpg",
+            }}
+            style={styles.friendImage}
+          />
+        </View>
+        <View>
+          {loading ? (
+            <Text>User Posts Loading...</Text>
+          ) : (
+            posts.map((post) => {
+              return <CssPostCard posts={post} />;
+            })
           )}
         </View>
-        <View style={styles.userDetails}>
-          <View style={{ marginLeft: 55 }}>
-            <Text style={{ textAlign: "center" }}>{user.username}</Text>
-            <Text style={{ textAlign: "center" }}>{user.email}</Text>
-          </View>
-          <TouchableOpacity style={styles.customButton}>
-            <Icon name="edit" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.customButton}>
-            <Icon name="delete" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.friendContainer}>
-        <Image
-          source={{
-            uri: "https://media.comicbook.com/2021/04/attack-on-titan-ending-levi-ackerman-1263774.jpeg?auto=webp&width=1200&height=675&crop=1200:675,smart",
-          }}
-          style={styles.friendImage}
-        />
-        <Image
-          source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu1MMT8BUmERLt1GEZwFvYVtTD7YOfEYsYxA&usqp=CAU",
-          }}
-          style={styles.friendImage}
-        />
-        <Image
-          source={{
-            uri: "https://www.personality-database.com/profile_images/12344.png",
-          }}
-          style={styles.friendImage}
-        />
-        <Image
-          source={{
-            uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfXmGRshbNAaElslvI4CLpQwG_LbFJw3YBaw&usqp=CAU",
-          }}
-          style={styles.friendImage}
-        />
-        <Image
-          source={{
-            uri: "https://mfiles.alphacoders.com/749/749909.jpg",
-          }}
-          style={styles.friendImage}
-        />
-      </View>
-      <View>
-        {loading ? (
-          <Text>User Posts Loading...</Text>
-        ) : (
-          <FlatList
-            data={posts}
-            renderItem={({ item }) => <CssPostCard posts={item} />}
-            keyExtractor={(item) => item.id}
-          />
-        )}
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
