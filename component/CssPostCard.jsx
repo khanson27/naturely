@@ -81,7 +81,11 @@ const CssPostCard = ({ posts, navigation, pageUsed = false, onClick }) => {
               ) : null}
             </View>
           </View>
-          <Text style={pageUsed ? styles.nameMap : styles.usernameText}>
+          <Text
+            style={pageUsed ? styles.nameMap : styles.usernameText}
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
             {posts.author}
           </Text>
           <Text
@@ -100,7 +104,7 @@ const CssPostCard = ({ posts, navigation, pageUsed = false, onClick }) => {
           </Text>
           <Text style={styles.timeText}>{`posted ${timeSince(
             posts.createdDate
-          )} days ago...`}</Text>
+          )} ago...`}</Text>
           <View style={styles.chipContainer}>
             <View style={styles.chipItem}>
               <Chip
