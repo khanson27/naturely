@@ -170,7 +170,7 @@ export const ProfilePage = () => {
             <Text>User Posts Loading...</Text>
           ) : (
             posts.map((post) => {
-              return <CssPostCard posts={post} />;
+              return <CssPostCard posts={post} key={post.createdDate} />;
             })
           )}
         </View>

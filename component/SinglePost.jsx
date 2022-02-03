@@ -23,6 +23,7 @@ export const SinglePost = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { userData } = useContext(UserContext);
   const { postId } = route.params;
+  const [place, setPlace] = useState([]);
 
   useEffect(() => {
     getSinglePost(postId)
@@ -37,6 +38,10 @@ export const SinglePost = ({ navigation, route }) => {
         setIsLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    setPlace(singlePost.locationName);
+  }, [singlePost]);
 
   const handlePress = () => {
     setIsLoading(true);
@@ -92,7 +97,12 @@ export const SinglePost = ({ navigation, route }) => {
                   source={require("../assets/location-pin.png")}
                 />
                 <Text style={styles.locationText}>
-                  {singlePost.locationName}
+                  {place[0] ||
+                    place[1] ||
+                    place[2] ||
+                    place[3] ||
+                    place[4] ||
+                    place[5]}
                 </Text>
               </View>
               <Text styles={styles.text}>{singlePost.description}</Text>
@@ -113,7 +123,9 @@ export const SinglePost = ({ navigation, route }) => {
         </View>
         <View style={styles.commentListContainer}>
           {comments.map((comment) => {
-            return <CommentsCard comments={comment} />;
+            return (
+              <CommentsCard comments={comment} key={comment.createdDate} />
+            );
           })}
         </View>
       </ScrollView>

@@ -1,12 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
+import { timeSince } from "../utils/pastTime";
 
 const CommentsCards = ({ comments }) => {
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
-        <Text>{comments.author}</Text>
-        <Text>{comments.createdDate}</Text>
+        <Text>{comments.author} - </Text>
+        <Text>{timeSince(comments.createdDate)}</Text>
       </View>
       <View style={styles.commentContainer}>
         <Text>{comments.comment}</Text>
