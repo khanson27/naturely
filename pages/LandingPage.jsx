@@ -18,7 +18,7 @@ export const LandingPage = ({ navigation }) => {
       >
         <View style={styles.contents}>
           <Image
-            source={require("../assets/naturely-text-only.png")}
+            source={require("../assets/naturely-text-only-bigger.png")}
             style={styles.logo}
           />
           <Text style={styles.Welcome}>WELCOME</Text>
@@ -62,10 +62,11 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    top: -270,
+    top: -75,
     alignItems: "center",
     justifyContent: "center",
     width: "75%",
+    resizeMode: "contain",
   },
 
   Welcome: {
