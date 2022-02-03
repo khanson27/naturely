@@ -1,32 +1,34 @@
-import { StyleSheet, SafeAreaView, Platform, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { useEffect, useState, useContext } from 'react';
-import { UserProvider } from './context/userContext';
-import { BrowsePage } from './pages/BrowsePage';
-import { HomePage } from './pages/HomePage';
-import { LandingPage } from './pages/LandingPage';
-import { LoginPage } from './pages/LoginPage';
-import { MapPage } from './pages/MapPage';
-import { PostPage } from './pages/PostPage';
-import { PostingPage } from './pages/PostingPage';
-import { AddTopicPage } from './pages/AddTopicPage';
-import { RegisterPage } from './pages/RegisterPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { OtherUsersPage } from './pages/OtherUsersPage';
-import { LocateUser } from './component/LocateUser';
-import { Header } from './component/Header';
-import { UsersProfile } from './component/UsersProfile';
-import { TakePhoto } from './component/TakePhoto';
-import { SinglePost } from './component/SinglePost';
-import { auth, onAuthStateChanged } from './Server/Auth-user';
-import { Ionicons, FontAwesome, FontAwesome5 } from '@expo/vector-icons';
-import { TopicProvider } from './context/topicContext';
-import { PositionProvider } from './context/positionContext';
-import { ImageProvider } from './context/imageContext';
-import { UserContext } from './context/userContext';
-import { LoadingPage } from './pages/LoadingPage';
+import { StyleSheet, SafeAreaView, Platform, Text, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { useEffect, useState, useContext } from "react";
+import { UserProvider } from "./context/userContext";
+import { BrowsePage } from "./pages/BrowsePage";
+import { HomePage } from "./pages/HomePage";
+import { LandingPage } from "./pages/LandingPage";
+import { LoginPage } from "./pages/LoginPage";
+import { MapPage } from "./pages/MapPage";
+import { PostPage } from "./pages/PostPage";
+import { PostingPage } from "./pages/PostingPage";
+import { AddTopicPage } from "./pages/AddTopicPage";
+import { RegisterPage } from "./pages/RegisterPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { OtherUsersPage } from "./pages/OtherUsersPage";
+import { LocateUser } from "./component/LocateUser";
+import { Header } from "./component/Header";
+import { UsersProfile } from "./component/UsersProfile";
+import { TakePhoto } from "./component/TakePhoto";
+import { SinglePost } from "./component/SinglePost";
+import { auth, onAuthStateChanged } from "./Server/Auth-user";
+import { Ionicons, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { TopicProvider } from "./context/topicContext";
+import { PositionProvider } from "./context/positionContext";
+import { ImageProvider } from "./context/imageContext";
+import { UserContext } from "./context/userContext";
+import { LoadingPage } from "./pages/LoadingPage";
+import { LogBox } from "react-native";
+LogBox.ignoreAllLogs();
 
 const AuthStack = createStackNavigator();
 
@@ -56,9 +58,9 @@ const HomeStackScreen = () => (
     <HomeStack.Screen
       name="HomePage"
       options={{
-        headerMode: 'screen',
+        headerMode: "screen",
         header: ({ navigation }) => {
-          return <Header title={'Home'} navigation={navigation} />;
+          return <Header title={"Home"} navigation={navigation} />;
         },
         headerStyle: {
           height: 80, // Specify the height of your custom header
@@ -69,22 +71,22 @@ const HomeStackScreen = () => (
     <HomeStack.Screen
       name="SinglePost"
       options={{
-        title: 'Post',
+        title: "Post",
         headerStyle: {
-          backgroundColor: '#253334',
+          backgroundColor: "#253334",
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
       }}
       component={SinglePost}
     />
     <HomeStack.Screen
       name="UserProfile"
       options={{
-        title: 'Profile',
+        title: "Profile",
         headerStyle: {
-          backgroundColor: '#253334',
+          backgroundColor: "#253334",
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
       }}
       component={UsersProfile}
     />
@@ -118,9 +120,9 @@ const ProfileStackScreen = () => (
     <ProfileStack.Screen
       name="ProfilePage"
       options={{
-        headerMode: 'screen',
+        headerMode: "screen",
         header: ({ navigation }) => {
-          return <Header title={'Profile'} navigation={navigation} />;
+          return <Header title={"Profile"} navigation={navigation} />;
         },
         headerStyle: {
           height: 80, // Specify the height of your custom header
@@ -147,9 +149,9 @@ const BrowseStackScreen = () => (
     <BrowseStack.Screen
       name="BrowsePage"
       options={{
-        headerMode: 'screen',
+        headerMode: "screen",
         header: ({ navigation }) => {
-          return <Header title={'Search'} navigation={navigation} />;
+          return <Header title={"Search"} navigation={navigation} />;
         },
         headerStyle: {
           height: 80, // Specify the height of your custom header
@@ -160,9 +162,9 @@ const BrowseStackScreen = () => (
     <BrowseStack.Screen
       name="OtherUsersPage"
       options={{
-        headerMode: 'screen',
+        headerMode: "screen",
         header: ({ navigation }) => {
-          return <Header title={'User Profile'} navigation={navigation} />;
+          return <Header title={"User Profile"} navigation={navigation} />;
         },
         headerStyle: {
           height: 80, // Specify the height of your custom header
@@ -179,33 +181,33 @@ const PostStackScreen = () => (
     <PostStack.Screen
       name="PostingPage"
       options={{
-        title: 'Posting',
+        title: "Posting",
         headerStyle: {
-          backgroundColor: '#253334',
+          backgroundColor: "#253334",
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
       }}
       component={PostingPage}
     />
     <PostStack.Screen
       name="PostPage"
       options={{
-        title: 'Add Post',
+        title: "Add Post",
         headerStyle: {
-          backgroundColor: '#253334',
+          backgroundColor: "#253334",
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
       }}
       component={PostPage}
     />
     <PostStack.Screen
       name="AddTopicPage"
       options={{
-        title: 'Add Topic',
+        title: "Add Topic",
         headerStyle: {
-          backgroundColor: '#253334',
+          backgroundColor: "#253334",
         },
-        headerTintColor: '#fff',
+        headerTintColor: "#fff",
       }}
       component={AddTopicPage}
     />
@@ -231,7 +233,7 @@ const TabsScreen = () => (
     // inactiveColor="#fff"
     shifting={false}
     barStyle={{
-      backgroundColor: '#253334',
+      backgroundColor: "#253334",
       paddingTop: 10,
       paddingBottom: 2,
       // borderWidth: 1,
@@ -257,7 +259,7 @@ const TabsScreen = () => (
             >
               <Ionicons name="home-sharp" size={24} color="white" />
               {focused ? (
-                <Text style={{ color: 'white' }}>•</Text>
+                <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
@@ -281,7 +283,7 @@ const TabsScreen = () => (
             >
               <FontAwesome5 name="map-marked-alt" size={24} color="white" />
               {focused ? (
-                <Text style={{ color: 'white' }}>•</Text>
+                <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
@@ -304,7 +306,7 @@ const TabsScreen = () => (
             >
               <FontAwesome5 name="search" size={24} color="white" />
               {focused ? (
-                <Text style={{ color: 'white' }}>•</Text>
+                <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
@@ -328,7 +330,7 @@ const TabsScreen = () => (
               <FontAwesome5 name="user-alt" size={24} color="white" />
 
               {focused ? (
-                <Text style={{ color: 'white' }}>•</Text>
+                <Text style={{ color: "white" }}>•</Text>
               ) : (
                 <Text></Text>
               )}
@@ -416,12 +418,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? 25 : 0,
-    backgroundColor: '#253334',
+    paddingTop: Platform.OS === "android" ? 25 : 0,
+    backgroundColor: "#253334",
   },
 
   icon: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
