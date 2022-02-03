@@ -14,6 +14,7 @@ import { UserContext } from "../context/userContext";
 import { createComment, getComments } from "../Server/PostsData";
 import { InputText } from "./InputText";
 import CommentsCard from "./CommentsCard";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const SinglePost = ({ navigation, route }) => {
   const [singlePost, setSinglePost] = useState({});
@@ -22,8 +23,8 @@ export const SinglePost = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const { userData } = useContext(UserContext);
   const { postId } = route.params;
+
   useEffect(() => {
-    setIsLoading(true);
     getSinglePost(postId)
       .then((post) => {
         setSinglePost(post);
@@ -37,12 +38,13 @@ export const SinglePost = ({ navigation, route }) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   , []);
-  // });
   const handlePress = () => {
-    createComment(
+    setIsLoading(true);
+    if (comment === "") {
+      setIsLoading(false);
+      return;
+    }
+    return createComment(
       postId,
       {
         comment: comment,
@@ -51,7 +53,21 @@ export const SinglePost = ({ navigation, route }) => {
         postId: postId,
       },
       userData.username
-    );
+    )
+      .then((comment) => {
+        setComment("");
+        return getSinglePost(postId);
+      })
+      .then((post) => {
+        setSinglePost(post);
+      })
+      .then(() => {
+        return getComments(postId);
+      })
+      .then((comments) => {
+        setComments(comments);
+        setIsLoading(false);
+      });
   };
   return (
     <ImageBackground
@@ -60,43 +76,47 @@ export const SinglePost = ({ navigation, route }) => {
       style={styles.Background}
       blurRadius={5}
     >
-      <View style={styles.container}>
-        {isLoading ? (
-          <Text>Post is Loading...</Text>
-        ) : (
-          <View>
-            <Image style={styles.image} source={{ uri: singlePost.image }} />
-            <TouchableOpacity>
-              <Text style={styles.text}>{singlePost.author}</Text>
-            </TouchableOpacity>
-            <View style={styles.locationTextContainer}>
-              <Image
-                style={styles.locationIcon}
-                source={require("../assets/location-pin.png")}
-              />
-              <Text style={styles.locationText}>{singlePost.locationName}</Text>
+      <ScrollView>
+        <View style={styles.container}>
+          {isLoading ? (
+            <Text>Post is Loading...</Text>
+          ) : (
+            <View style={styles.detailsContainer}>
+              <Image style={styles.image} source={{ uri: singlePost.image }} />
+              <TouchableOpacity>
+                <Text style={styles.text}>{singlePost.author}</Text>
+              </TouchableOpacity>
+              <View style={styles.locationTextContainer}>
+                <Image
+                  style={styles.locationIcon}
+                  source={require("../assets/location-pin.png")}
+                />
+                <Text style={styles.locationText}>
+                  {singlePost.locationName}
+                </Text>
+              </View>
+              <Text styles={styles.text}>{singlePost.description}</Text>
+              <Text>{singlePost.likes}</Text>
             </View>
-            <Text styles={styles.text}>{singlePost.description}</Text>
-            <Text>{singlePost.likes}</Text>
-          </View>
-        )}
-      </View>
-      <View>
-        <InputText onChangeText={setComment} value={comment} multiline={true} />
-        <Button onPress={handlePress} title="submit">
-          Submit
-        </Button>
-      </View>
-      <View>
-        {/* <FlatList
-          data={comments}
-          renderItem={({ item }) => <CommentsCard comments={item} />}
-          keyExtractor={(item) => item.id}
-        /> */}
-        {comments.map((comment) => {
-          return <CommentsCard comments={comment} />;
-        })}
-      </View>
+          )}
+        </View>
+        <View style={styles.textBoxContainer}>
+          <InputText
+            onChangeText={setComment}
+            text={comment}
+            multiline={true}
+            placeholder="Write your comment here"
+          />
+          <Button onPress={handlePress} title="submit">
+            Submit
+          </Button>
+        </View>
+        <View style={styles.commentListContainer}>
+          {comments.map((comment) => {
+            return <CommentsCard comments={comment} />;
+          })}
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -135,5 +155,23 @@ const styles = StyleSheet.create({
     color: "#7C9A92",
     fontSize: 13,
     marginRight: 5,
+  },
+  detailsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textBoxContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  commentListContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

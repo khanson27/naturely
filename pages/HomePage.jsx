@@ -217,9 +217,9 @@ export const HomePage = ({ navigation }) => {
                         //loadPosts(posts[posts.length - 1].createdDate);
                       }}
                       color="#7C9A92"
-                      style={styles.Loading}
+                      style={{ ...styles.Loading, marginBottom: 35 }}
                     >
-                      Load more...
+                      Load more
                     </Button>
                   ) : (
                     <Text style={styles.textThick}>Loading ...</Text>
